@@ -1,4 +1,5 @@
 ﻿using InvestigationGameApp.Models;
+using InvestigationGameApp.Models.Base;
 using InvestigationGameApp.Models.Interfaces;
 using InvestigationGameApp.Models.Sensors;
 using System;
@@ -18,13 +19,13 @@ namespace InvestigationGameApp.Controllers
         public ISensor? CreateSensor(string type)
         {
             ISensor sensor = null;
-            if (type == "audio")
+            if (type == "basic")
             {
-                
+                sensor = new SensorBase();
             }
             else if (type == "thermal")
             {
-
+                sensor = new ThermalSensor();
             }
             return sensor;
         }

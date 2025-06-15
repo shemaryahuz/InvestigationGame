@@ -8,5 +8,9 @@ namespace InvestigationGameApp.Models.Interfaces
 {
     internal interface ISensor
     {
+        string Name { get; }
+        string Type { get; }
+        bool IsActive { get; set; }
+        void Activate();
     }
 }

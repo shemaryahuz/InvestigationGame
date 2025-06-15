@@ -8,5 +8,11 @@ namespace InvestigationGameApp.Models.Interfaces
 {
     internal interface IAgent
     {
+        string Name { get; }
+        string[] Weaknesses { get; }
+        List<ISensor> AttachedSensors { get; }
+        bool IsExposed { get; }
+        void AttachSensor(ISensor sensor);
+        int GetMatchCount();
     }
 }

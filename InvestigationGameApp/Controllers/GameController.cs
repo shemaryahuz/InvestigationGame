@@ -23,6 +23,10 @@ namespace InvestigationGameApp.Controllers
             {
                 sensor = new SensorBase();
             }
+            else if (type == "audio")
+            {
+                sensor = new AudioSensor();
+            }
             else if (type == "thermal")
             {
                 sensor = new ThermalSensor();

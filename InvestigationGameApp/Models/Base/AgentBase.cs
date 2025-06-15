@@ -13,7 +13,14 @@ namespace InvestigationGameApp.Models.Base
         public string[] Weaknesses { get; set; }
         public List<ISensor> AttachedSensors { get; set; }
         public bool IsExposed { get; set; }
-        public void AttachSensor(ISensor sensor) { }
-        public int GetMatchCount() { return 0; }
+        public void AttachSensor(ISensor sensor)
+        {
+            AttachedSensors.Add(sensor);
+        }
+        public int GetMatchCount()
+        {
+            int matchCount = 0;
+            return matchCount;
+        }
     }
 }

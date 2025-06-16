@@ -22,25 +22,19 @@ namespace InvestigationGameApp.Controllers
             room = new InvestigationRoom();
             room.Agent = agent;
 
+            // Show rules
             Console.WriteLine(
-                $"Investigation Game Started!\n" +
+                "=== Investigation Game Started ===\n" +
                 $"Agent {agent.Name} is in the investigation room.\n" +
-                $"Find all weaknesses to expose the agent!"
+                "Your mission: Find all weaknesses to expose the agent!"
                 );
-        }
-        private void GameLoop() { }
-        private ISensor? CreateSensor(string type)
-        {
-            ISensor sensor = null;
-            if (type == "audio")
+            // Show available sensors
+            Console.Write("Available sensors:");
+            foreach (string sensor in room.AvailableSensors)
             {
-                sensor = new AudioSensor($"Audio Detector #{DateTime.Now.Millisecond}");
+                Console.Write($" {sensor}");
             }
-            else if (type == "thermal")
-            {
-                sensor = new ThermalSensor($"Thermal Scanner #{DateTime.Now.Millisecond}");
-            }
-            return sensor;
+            Console.WriteLine();
         }
         private void ShowStatus()
         {
@@ -58,7 +52,7 @@ namespace InvestigationGameApp.Controllers
                     if (room.Agent.AttachedSensors[i] != null)
                     {
                         ISensor slot = room.Agent.AttachedSensors[i];
-                        Console.WriteLine($" Slot {i + 1}: {slot.Type} - Active: {slot.IsActive}");
+                        Console.WriteLine($"Slot {i + 1}: {slot.Type} - Active: {slot.IsActive}");
                     }
                     else
                     {
@@ -67,10 +61,62 @@ namespace InvestigationGameApp.Controllers
                 }
             }
         }
+        private ISensor? CreateSensor(string type)
+        {
+            ISensor sensor = null;
+            if (type == "audio")
+            {
+                sensor = new AudioSensor($"Audio Detector #{DateTime.Now.Millisecond}");
+            }
+            else if (type == "thermal")
+            {
+                sensor = new ThermalSensor($"Thermal Scanner #{DateTime.Now.Millisecond}");
+            }
+            return sensor;
+        }
+        private void GameLoop()
+        {
+            int turnCount = 0;
+            int turnLimit = 10;
+            while (room.Agent.GetMatchCount() < room.Agent.Weaknesses.Length && turnCount <= turnLimit)
+            {
+                // Show and increase turn count
+                turnCount++;
+                Console.WriteLine($"=== Turn {turnCount} ===");
+                ShowStatus();
+                // Get choice
+                Console.WriteLine("Choose sensor type ('audio' or 'thermal'):");
+                string input = Console.ReadLine()?.ToLower();
+                // Create sensor
+                ISensor? sensor = CreateSensor(input);
+                if (sensor != null)
+                {
+                    room.Agent.AttachSensor(sensor);
+                    sensor.Activate();
+                    Console.WriteLine(
+                        $"Sensor {sensor.Name} activated!\n" +
+                        $"Weaknesses found: {room.Agent.GetMatchCount()}/{room.Agent.Weaknesses.Length}"
+                        );
+                }
+                else
+                {
+                    Console.WriteLine("Invalid sensor type! Use 'audio' or 'thermal'");
+                }
+            }
+            if (room.Agent.GetMatchCount() < room.Agent.Weaknesses.Length)
+            {
+                Console.WriteLine("Game Over - Turn limit reached!");
+            }
+            else
+            {
+                Console.WriteLine("SUCCESS! Agent exposed!");
+                Console.WriteLine($"Mission completed in {turnCount} turns.");
+            }
+        }
         public void Run()
         {
             StartGame();
-            ShowStatus();
+            GameLoop();
         }
     }
 }

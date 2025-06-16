@@ -1,4 +1,4 @@
-﻿using InvestigationGameApp.Models;
+﻿using InvestigationGameApp.Core;
 using InvestigationGameApp.Models.Agents;
 using InvestigationGameApp.Models.Base;
 using InvestigationGameApp.Models.Interfaces;
@@ -16,23 +16,21 @@ namespace InvestigationGameApp.Controllers
         private InvestigationRoom room;
         private void StartGame()
         {
-            // Create agent
-            FootAgent agent = new FootAgent("Haminai");
-            // Create room
-            room = new InvestigationRoom();
-            room.Agent = agent;
+            // Create room with agent
+            FootAgent agent = new("ali");
+            room = new InvestigationRoom(agent);
 
             // Show rules
             Console.WriteLine(
                 "=== Investigation Game Started ===\n" +
-                $"Agent {agent.Name} is in the investigation room.\n" +
+                $"Agent {room.Agent.Name} is in the investigation room.\n" +
                 "Your mission: Find all weaknesses to expose the agent!"
                 );
             // Show available sensors
-            Console.Write("Available sensors:");
-            foreach (string sensor in room.AvailableSensors)
+            Console.WriteLine("Available sensors:");
+            foreach (ISensor sensor in room.AvailableSensors)
             {
-                Console.Write($" {sensor}");
+                Console.WriteLine($"{sensor.Type} {sensor.Name}");
             }
             Console.WriteLine();
         }

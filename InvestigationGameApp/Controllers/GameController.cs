@@ -44,11 +44,33 @@ namespace InvestigationGameApp.Controllers
         }
         private void ShowStatus()
         {
-
+            if (room?.Agent != null)
+            {
+                // Show match count
+                Console.WriteLine(
+                    $"Agent {room.Agent.Name}.\n" +
+                    $"Weaknesses found: {room.Agent.GetMatchCount()}/{room.Agent.Weaknesses.Length}"
+                    );
+                // Show current attached sensors
+                Console.WriteLine("Current sensors:");
+                for (int i = 0; i < room.Agent.AttachedSensors.Length; i++)
+                {
+                    if (room.Agent.AttachedSensors[i] != null)
+                    {
+                        ISensor slot = room.Agent.AttachedSensors[i];
+                        Console.WriteLine($" Slot {i + 1}: {slot.Type} - Active: {slot.IsActive}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Slot {i + 1}: Empty");
+                    }
+                }
+            }
         }
         public void Run()
         {
             StartGame();
+            ShowStatus();
         }
     }
 }

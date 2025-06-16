@@ -25,7 +25,7 @@ namespace InvestigationGameApp.Models.Base
             }
         }
         public string Name { get; }
-        public string[] Weaknesses { get; set; }
+        public string[] Weaknesses { get; }
         public ISensor[] AttachedSensors { get; set; }
         public bool IsExposed { get; set; } = false;
         private int nextSlot = 0;

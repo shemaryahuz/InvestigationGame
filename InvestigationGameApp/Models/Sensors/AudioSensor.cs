@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace InvestigationGameApp.Models.Sensors
 {
-    internal class AudioSensor: SensorBase, ISensor
+    internal class AudioSensor: Sensor, ISensor
     {
-        public override string Type { get; set; } = "Audio";
+        public string Type { get; set; }
     }
 }

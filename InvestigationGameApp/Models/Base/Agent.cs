@@ -43,6 +43,24 @@ namespace InvestigationGameApp.Models.Base
             int matchCount = 0;
             // Make bool arr of foundSensors
             bool[] weaknessesFound = new bool[Weaknesses.Length];
+            // Loop over th attached sensors
+            for (int i = 0; i < AttachedSensors.Length; i++)
+            {
+                // Go to the attached sensors
+                if (AttachedSensors[i] != null && AttachedSensors[i].IsActive)
+                {
+                    // Check if the attached sensor is in weaknesses
+                    for (int j = 0; j < Weaknesses.Length; j++)
+                    {
+                        if (!weaknessesFound[j] && Weaknesses[i] == AttachedSensors[i].Type)
+                        {
+                            weaknessesFound[j] = true;
+                            matchCount++;
+                            break;
+                        }
+                    }
+                }
+            }
             return matchCount;
         }
     }

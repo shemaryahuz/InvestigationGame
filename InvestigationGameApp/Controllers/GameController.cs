@@ -1,4 +1,5 @@
 ﻿using InvestigationGameApp.Models;
+using InvestigationGameApp.Models.Agents;
 using InvestigationGameApp.Models.Base;
 using InvestigationGameApp.Models.Interfaces;
 using InvestigationGameApp.Models.Sensors;
@@ -13,9 +14,22 @@ namespace InvestigationGameApp.Controllers
     internal class GameController
     {
         private InvestigationRoom room;
-        public void StartGame() { }
-        public void GameLoop() { }
-        public ISensor? CreateSensor(string type)
+        private void StartGame()
+        {
+            // Create agent
+            FootAgent agent = new FootAgent("Haminai");
+            // Create room
+            room = new InvestigationRoom();
+            room.Agent = agent;
+
+            Console.WriteLine(
+                $"Investigation Game Started!\n" +
+                $"Agent {agent.Name} is in the investigation room.\n" +
+                $"Find all weaknesses to expose the agent!"
+                );
+        }
+        private void GameLoop() { }
+        private ISensor? CreateSensor(string type)
         {
             ISensor sensor = null;
             if (type == "audio")
@@ -28,9 +42,13 @@ namespace InvestigationGameApp.Controllers
             }
             return sensor;
         }
-        public void ShowStatus()
+        private void ShowStatus()
         {
 
+        }
+        public void Run()
+        {
+            StartGame();
         }
     }
 }

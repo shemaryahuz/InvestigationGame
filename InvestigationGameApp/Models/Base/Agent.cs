@@ -7,21 +7,42 @@ using System.Threading.Tasks;
 
 namespace InvestigationGameApp.Models.Base
 {
-    internal class Agent: IAgent
+    // base abstract class for implement base-agent properties and methods for all agents
+    internal abstract class Agent: IAgent
     {
-        public Agent(string name)
+        public Agent(string name, int weaknessesAmount, string[] sensorTypes)
         {
-            this.Name = name;
-            this.IsExposed = false;
+            // Initialize properties  
+            Name = name;
+            Weaknesses = new string[weaknessesAmount];
+            AttachedSensors = new ISensor[weaknessesAmount];
+            // Add random weaknesses from sensorTypes
+            Random random = new Random();
+            for (int i = 0; i < weaknessesAmount; i++)
+            {
+                int randomIndex = random.Next(sensorTypes.Length);
+                Weaknesses[i] = sensorTypes[randomIndex];
+            }
         }
         public string Name { get; }
         public string[] Weaknesses { get; set; }
         public ISensor[] AttachedSensors { get; set; }
-        public bool IsExposed { get; set; }
-        public void AttachSensor(ISensor sensor) { }
+        public bool IsExposed { get; set; } = false;
+        private int nextSlot = 0;
+        public void AttachSensor(ISensor sensor)
+        {
+            AttachedSensors[nextSlot] = sensor;
+            nextSlot++;
+            if (nextSlot >= AttachedSensors.Length)
+            {
+                nextSlot = 0;
+            }
+        }
         public int GetMatchCount()
         {
             int matchCount = 0;
+            // Make bool arr of foundSensors
+            bool[] weaknessesFound = new bool[Weaknesses.Length];
             return matchCount;
         }
     }

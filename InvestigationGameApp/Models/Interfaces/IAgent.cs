@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace InvestigationGameApp.Models.Interfaces
 {
+    // interface for contract of all agents
     internal interface IAgent
     {
         string Name { get; }
         string[] Weaknesses { get; }
-        List<ISensor> AttachedSensors { get; }
-        bool IsExposed { get; }
+        ISensor[] AttachedSensors { get; }
+        bool IsExposed { get; set; }
         void AttachSensor(ISensor sensor);
         int GetMatchCount();
     }

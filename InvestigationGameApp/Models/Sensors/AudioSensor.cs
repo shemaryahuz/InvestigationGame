@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 
 namespace InvestigationGameApp.Models.Sensors
 {
+    // Class that represents AudioSensor
     internal class AudioSensor: Sensor, ISensor
     {
-        public string Type { get; set; }
+        public AudioSensor(string name) : base(name) { }
+        public override string Type { get; } = "Audio";
     }
 }

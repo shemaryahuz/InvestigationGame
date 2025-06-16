@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace InvestigationGameApp.Models.Interfaces
 {
+    // interface for contract of all sensors
     internal interface ISensor
     {
         string Name { get; }

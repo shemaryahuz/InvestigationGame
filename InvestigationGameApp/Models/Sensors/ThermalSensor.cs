@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 
 namespace InvestigationGameApp.Models.Sensors
 {
-    internal class ThermalSensor: SensorBase, ISensor
+    // Class that represents ThermalSensor
+    internal class ThermalSensor : Sensor, ISensor
     {
-        public override string Type { get; set; } = "Thermal";
+        public ThermalSensor(string name) : base(name) { }
+        public override string Type { get; } = "Thermal";
     }
 }

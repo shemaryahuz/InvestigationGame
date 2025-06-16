@@ -11,6 +11,6 @@ namespace InvestigationGameApp.Models
     {
         public int ID { get; set; }
         public IAgent Agent { get; set; }
-        public string[] AvailableSensors { get; set; } = { "Basic", "Audio", "Thermal" };
+        public string[] AvailableSensors { get; set; } = { "Audio", "Thermal" };
     }
 }

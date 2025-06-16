@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InvestigationGameApp.Models.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,8 @@ namespace InvestigationGameApp.Models
 {
     internal class InvestigationRoom
     {
+        public int ID { get; set; }
+        public IAgent Agent { get; set; }
+        public string[] AvailableSensors { get; set; } = { "Audio", "Thermal" };
     }
 }

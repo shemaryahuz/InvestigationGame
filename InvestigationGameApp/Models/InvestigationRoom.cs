@@ -9,8 +9,17 @@ namespace InvestigationGameApp.Models
 {
     internal class InvestigationRoom
     {
-        public int ID { get; set; }
         public IAgent Agent { get; set; }
         public string[] AvailableSensors { get; set; } = { "Audio", "Thermal" };
+        public void ActivateSensors()
+        {
+            foreach (ISensor sensor in Agent.AttachedSensors)
+            {
+                if (sensor != null)
+                {
+                    sensor.Activate();
+                }
+            }
+        }
     }
 }

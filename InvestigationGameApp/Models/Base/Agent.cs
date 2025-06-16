@@ -43,7 +43,7 @@ namespace InvestigationGameApp.Models.Base
             int matchCount = 0;
             // Make bool arr of foundSensors
             bool[] weaknessesFound = new bool[Weaknesses.Length];
-            // Loop over th attached sensors
+            // Loop over the attached sensors
             for (int i = 0; i < AttachedSensors.Length; i++)
             {
                 // Go to the attached sensors
@@ -59,6 +59,11 @@ namespace InvestigationGameApp.Models.Base
                             break;
                         }
                     }
+                }
+                // If all the weaknesses found update IsExposed
+                if (matchCount >= Weaknesses.Length)
+                {
+                    IsExposed = true;
                 }
             }
             return matchCount;

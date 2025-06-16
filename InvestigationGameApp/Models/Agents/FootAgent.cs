@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace InvestigationGameApp.Models.Agents
 {
-    // Class that represents FootAgent, has 2 weaknesses from 2 types
+    // Class that represents FootAgent, has 5 weaknesses from 2 types
     internal class FootAgent: Agent, IAgent
     {
         public FootAgent(string name) : base(name, 2, new string[] { "Audio", "Thermal" }) { }

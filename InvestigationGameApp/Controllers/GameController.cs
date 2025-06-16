@@ -38,26 +38,23 @@ namespace InvestigationGameApp.Controllers
         }
         private void ShowStatus()
         {
-            if (room?.Agent != null)
+            // Show match count
+            Console.WriteLine(
+                $"Agent {room.Agent.Name}.\n" +
+                $"Weaknesses found: {room.Agent.GetMatchCount()}/{room.Agent.Weaknesses.Length}"
+                );
+            // Show current attached sensors
+            Console.WriteLine("Current sensors:");
+            for (int i = 0; i < room.Agent.AttachedSensors.Length; i++)
             {
-                // Show match count
-                Console.WriteLine(
-                    $"Agent {room.Agent.Name}.\n" +
-                    $"Weaknesses found: {room.Agent.GetMatchCount()}/{room.Agent.Weaknesses.Length}"
-                    );
-                // Show current attached sensors
-                Console.WriteLine("Current sensors:");
-                for (int i = 0; i < room.Agent.AttachedSensors.Length; i++)
+                if (room.Agent.AttachedSensors[i] != null)
                 {
-                    if (room.Agent.AttachedSensors[i] != null)
-                    {
-                        ISensor slot = room.Agent.AttachedSensors[i];
-                        Console.WriteLine($"Slot {i + 1}: {slot.Type} - Active: {slot.IsActive}");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Slot {i + 1}: Empty");
-                    }
+                    ISensor slot = room.Agent.AttachedSensors[i];
+                    Console.WriteLine($"Slot {i + 1}: {slot.Type} {slot.Name} - Active: {slot.IsActive}");
+                }
+                else
+                {
+                    Console.WriteLine($"Slot {i + 1}: Empty");
                 }
             }
         }
@@ -66,11 +63,11 @@ namespace InvestigationGameApp.Controllers
             ISensor sensor = null;
             if (type == "audio")
             {
-                sensor = new AudioSensor($"Audio Detector #{DateTime.Now.Millisecond}");
+                sensor = new AudioSensor($"A{DateTime.Now.Millisecond}");
             }
             else if (type == "thermal")
             {
-                sensor = new ThermalSensor($"Thermal Scanner #{DateTime.Now.Millisecond}");
+                sensor = new ThermalSensor($"T{DateTime.Now.Millisecond}");
             }
             return sensor;
         }
@@ -78,11 +75,12 @@ namespace InvestigationGameApp.Controllers
         {
             int turnCount = 0;
             int turnLimit = 10;
-            while (room.Agent.GetMatchCount() < room.Agent.Weaknesses.Length && turnCount <= turnLimit)
+            while (!room.Agent.IsExposed && turnCount < turnLimit)
             {
                 // Show and increase turn count
                 turnCount++;
                 Console.WriteLine($"=== Turn {turnCount} ===");
+                Console.WriteLine($"=== {turnLimit - turnCount} Turns left ===");
                 ShowStatus();
                 // Get choice
                 Console.WriteLine("Choose sensor type ('audio' or 'thermal'):");
@@ -92,25 +90,22 @@ namespace InvestigationGameApp.Controllers
                 if (sensor != null)
                 {
                     room.Agent.AttachSensor(sensor);
-                    sensor.Activate();
-                    Console.WriteLine(
-                        $"Sensor {sensor.Name} activated!\n" +
-                        $"Weaknesses found: {room.Agent.GetMatchCount()}/{room.Agent.Weaknesses.Length}"
-                        );
+                    room.ActivateSensors();
+                    Console.WriteLine($"Weaknesses found: {room.Agent.GetMatchCount()}/{room.Agent.Weaknesses.Length}");
                 }
                 else
                 {
                     Console.WriteLine("Invalid sensor type! Use 'audio' or 'thermal'");
                 }
             }
-            if (room.Agent.GetMatchCount() < room.Agent.Weaknesses.Length)
-            {
-                Console.WriteLine("Game Over - Turn limit reached!");
-            }
-            else
+            if (room.Agent.IsExposed)
             {
                 Console.WriteLine("SUCCESS! Agent exposed!");
                 Console.WriteLine($"Mission completed in {turnCount} turns.");
+            }
+            else
+            {
+                Console.WriteLine("Game Over - Turn limit reached!");
             }
         }
         public void Run()

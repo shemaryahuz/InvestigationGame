@@ -1,129 +1,99 @@
 ﻿# InvestigationGame
+
 A game that simulates interrogating agents using sensors
+
 ---
+
 # Investigation Game - Basic Feature
 
 ## Project Structure
+
 ```
-InvestigationGame/
+InvestigationGameApp/
+├── Controllers/
+│   └── GameController.cs         # Main game loop and logic
 ├── Models/
-│   ├── ISensor.cs
-│   ├── IAgent.cs
-│   ├── AudioSensor.cs
-│   ├── ThermalSensor.cs
-│   ├── Agent.cs
-│   └── InvestigationRoom.cs
-├── GameController.cs
-└── Program.cs
+│   ├── Agents/
+│   │   └── FootAgent.cs         # Example implementation of an agent
+│   ├── Sensors/
+│   │   ├── AudioSensor.cs       # Implements ISensor for audio
+│   │   └── ThermalSensor.cs     # Implements ISensor for thermal
+│   ├── Interfaces/
+│   │   ├── IAgent.cs            # Agent interface
+│   │   └── ISensor.cs           # Sensor interface
+│   ├── Base/
+│   │   └── Agent.cs             # Base agent class
+│   └── InvestigationRoom.cs     # Represents the room with agent and sensors
+├── Program.cs                   # Entry point
 ```
 
-## Class Templates
+## Implemented Classes and Interfaces
 
-### ISensor.cs
-```csharp
-interface ISensor
-{
-    string Name { get; }
-    string Type { get; }
-    bool IsActive { get; set; }
-    void Activate();
-}
-```
+### ISensor (interface)
+Defines the contract for sensors:
+- `Name` (string)
+- `Type` (string)
+- `IsActive` (bool)
+- `Activate()`
 
-### IAgent.cs
-```csharp
-interface IAgent
-{
-    string Name { get; }
-    string[] Weaknesses { get; }
-    List<ISensor> AttachedSensors { get; }
-    bool IsExposed { get; }
-    void AttachSensor(ISensor sensor);
-    int GetMatchCount();
-}
-```
+### IAgent (interface)
+Defines the contract for agents:
+- `Name` (string)
+- `Weaknesses` (string[])
+- `AttachedSensors` (list/array of ISensor)
+- `IsExposed` (bool)
+- `AttachSensor(ISensor sensor)`
+- `GetMatchCount()`
 
-### AudioSensor.cs
-```csharp
-class AudioSensor : ISensor
-{
-    public string Name { get; set; }
-    public string Type { get; set; } = "Audio";
-    public bool IsActive { get; set; }
-    public void Activate() { /* implementation */ }
-}
-```
+### AudioSensor (class)
+Implements ISensor for audio detection.
 
-### ThermalSensor.cs
-```csharp
-class ThermalSensor : ISensor
-{
-    public string Name { get; set; }
-    public string Type { get; set; } = "Thermal";
-    public bool IsActive { get; set; }
-    public void Activate() { /* implementation */ }
-}
-```
+### ThermalSensor (class)
+Implements ISensor for thermal detection.
 
-### Agent.cs
-```csharp
-class Agent : IAgent
-{
-    public string Name { get; set; }
-    public string[] Weaknesses { get; set; }
-    public List<ISensor> AttachedSensors { get; set; }
-    public bool IsExposed { get; set; }
-    
-    public void AttachSensor(ISensor sensor) { /* implementation */ }
-    public int GetMatchCount() { /* implementation */ }
-}
-```
+### Agent (class)
+Implements IAgent, tracks weaknesses and attached sensors.
 
-### InvestigationRoom.cs
-```csharp
-class InvestigationRoom
-{
-    public int ID { get; set; }
-    public IAgent Agent { get; set; }
-    public string[] AvailableSensors { get; set; } = { "Audio", "Thermal" };
-}
-```
+### InvestigationRoom (class)
+Holds the agent and available sensors.
 
-### GameController.cs
-```csharp
-class GameController
-{
-    private InvestigationRoom room;
-    
-    public void StartGame() { /* implementation */ }
-    public void GameLoop() { /* implementation */ }
-    public ISensor CreateSensor(string type) { /* implementation */ }
-    public void ShowStatus() { /* implementation */ }
-}
-```
+### GameController (class)
+Handles game setup, main loop, and user interaction:
+- `StartGame()`: Initializes agent and room, prints intro.
+- `GameLoop()`: Handles each turn until agent is exposed or turns run out.
+- `CreateSensor(type)`: Instantiates the correct sensor.
+- `ShowStatus()`: Prints current state each turn.
+- `Run()`: Entry for controller (calls StartGame and GameLoop).
 
 ## Program Flow
 
-1. **Initialize**
-   - Create agent with 2 random weaknesses
-   - Create investigation room
-   - Show welcome message
+1. **Entry Point (`Program.cs`):**
+   - Instantiates `GameController` and calls `Run()`.
 
-2. **Game Loop**
-   ```
-   WHILE not agent.IsExposed:
-       - Show sensor options (Audio, Thermal)
-       - Get user choice
-       - Create and attach sensor
-       - Activate sensor
-       - Show result: "X/2 weaknesses found"
-   ```
+2. **Start Game (`GameController.cs`):**
+   - Creates an agent (e.g., `FootAgent`) with random weaknesses.
+   - Puts agent in `InvestigationRoom`.
+   - Prints welcome, rules, and available sensors.
 
-3. **End Game**
-   - Show "Agent exposed!" message
-   - Display turns used
+3. **Game Loop:**
+   - For up to 10 turns, or until all agent weaknesses are found:
+     - Shows current state (weaknesses found, sensors attached).
+     - Prompts user to choose sensor type (`audio` or `thermal`).
+     - Creates and attaches the selected sensor to the agent.
+     - Activates the sensor and checks for matches.
+     - Prints result ("X/2 weaknesses found").
+     - If an invalid sensor type is entered, prompts again.
+
+4. **End Game:**
+   - If all weaknesses are found: prints success and turn count.
+   - If turn limit reached: prints game over.
 
 ## Basic Rules
-- Agent has 2 weaknesses from: Audio, Thermal
-- Each turn: choose sensor → attach → activate → check match
-- Win when all weaknesses found
+
+- Agent has 2 weaknesses (randomly chosen from Audio, Thermal).
+- Each turn, user selects a sensor to try to expose weaknesses.
+- Win by finding both weaknesses before running out of turns.
+
+---
+
+*For future features, more agent/sensor types and deeper mechanics may be added. This README covers only the currently implemented logic and structure.*

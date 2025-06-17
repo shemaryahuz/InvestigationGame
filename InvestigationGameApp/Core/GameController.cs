@@ -99,48 +99,75 @@ namespace InvestigationGameApp.Controllers
                 Console.WriteLine(e);
             }
         }
+        private string? GetSensorChoice()
+        {
+            // Get sensor choice
+            Console.WriteLine("Choose sensor type from the fallowing:");
+            foreach(string type in sensorFactory.Sensors.Keys)
+            {
+                Console.WriteLine($"'{type}'");
+            }
+            string? sensorChoice = Console.ReadLine()?.ToLower();
+            return sensorChoice;
+        }
+        private int? GetSlotChoice()
+        {
+            // Get slot choice
+            Console.WriteLine($"Choose slot to attach in (from 1 to {room.Agent.AttachedSensors.Length})");
+            string? slotChoice = Console.ReadLine();
+            if ((int.TryParse(slotChoice, out int slot)) && slot >= 1 && slot <= room.Agent.AttachedSensors.Length)
+            {
+                return slot;
+            }
+            return null;
+        }
         private void GameLoop()
         {
             int turnCount = 0;
             int turnLimit = 10;
-            try
+            while (!room.Agent.IsExposed && turnCount < turnLimit)
             {
-                while (!room.Agent.IsExposed && turnCount < turnLimit)
+                // Show and increase turn count
+                turnCount++;
+                Console.WriteLine($"=== Turn {turnCount} ===");
+                Console.WriteLine($"=== {turnLimit - turnCount} Turns left ===");
+                ShowStatus();
+                ISensor sensor = null;
+                string? sensorChoice = GetSensorChoice();
+                if (sensorChoice != null && sensorFactory.Sensors.ContainsKey(sensorChoice))
                 {
-                    // Show and increase turn count
-                    turnCount++;
-                    Console.WriteLine($"=== Turn {turnCount} ===");
-                    Console.WriteLine($"=== {turnLimit - turnCount} Turns left ===");
-                    ShowStatus();
-                    // Get choice
-                    Console.WriteLine("Choose sensor type ('audio' or 'thermal'):");
-                    string input = Console.ReadLine()?.ToLower();
-                    // Create sensor
-                    ISensor? sensor = sensorFactory.GetSensor(input);
-                    if (sensor != null)
-                    {
-                        room.AttachSensor(sensor);
-                        room.ActivateSensors();
-                        Console.WriteLine($"Weaknesses found: {room.GetMatchCount()}/{room.Agent.Weaknesses.Length}");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid sensor type! Use 'audio' or 'thermal'");
-                    }
-                }
-                if (room.Agent.IsExposed)
-                {
-                    Console.WriteLine("SUCCESS! Agent exposed!");
-                    Console.WriteLine($"Mission completed in {turnCount} turns.");
+                    // Get sensor
+                    sensor = sensorFactory.GetSensor(sensorChoice);
                 }
                 else
                 {
-                    Console.WriteLine("Game Over - Turn limit reached!");
+                    Console.WriteLine("Invalid sensor type! Use one of the fallowing:");
+                    foreach (string type in sensorFactory.Sensors.Keys)
+                    {
+                        Console.WriteLine($"'{type}'");
+                    }
+                    continue;
+                }
+                int? slot = GetSlotChoice();
+                if (sensor != null && slot != null)
+                {
+                    room.AttachSensor(sensor, (int)slot - 1);
+                    room.ActivateSensors();
+                    Console.WriteLine($"Weaknesses found: {room.GetMatchCount()}/{room.Agent.Weaknesses.Length}");
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid slot! Use number from 1 to {room.Agent.AttachedSensors.Length}");
                 }
             }
-            catch(Exception e)
+            if (room.Agent.IsExposed)
             {
-                Console.WriteLine(e);
+                Console.WriteLine("SUCCESS! Agent exposed!");
+                Console.WriteLine($"Mission completed in {turnCount} turns.");
+            }
+            else
+            {
+                Console.WriteLine("Game Over - Turn limit reached!");
             }
         }
         public void Run()

@@ -25,15 +25,9 @@ namespace InvestigationGameApp.Core
                 }
             }
         }
-        private int nextSlot = 0;
-        public void AttachSensor(ISensor sensor)
+        public void AttachSensor(ISensor sensor, int slot)
         {
-            Agent.AttachedSensors[nextSlot] = sensor;
-            nextSlot++;
-            if (nextSlot >= Agent.AttachedSensors.Length)
-            {
-                nextSlot = 0;
-            }
+            Agent.AttachedSensors[slot] = sensor;
         }
         public int GetMatchCount()
         {

@@ -22,5 +22,6 @@ namespace InvestigationGameApp.Models.Base
         {
             IsActive = true;
         }
+        public IAgent Target { get; set; }
     }
 }

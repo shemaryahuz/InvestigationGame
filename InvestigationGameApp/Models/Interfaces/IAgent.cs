@@ -10,7 +10,7 @@ namespace InvestigationGameApp.Models.Interfaces
     internal interface IAgent
     {
         string Name { get; }
-        string[] Weaknesses { get; }
+        string[] Weaknesses { get; set; }
         ISensor[] AttachedSensors { get; }
         bool IsExposed { get; set; }
     }

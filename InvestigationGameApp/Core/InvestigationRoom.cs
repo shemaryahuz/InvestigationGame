@@ -27,6 +27,7 @@ namespace InvestigationGameApp.Core
         }
         public void AttachSensor(ISensor sensor, int slot)
         {
+            sensor.Target = Agent;
             Agent.AttachedSensors[slot] = sensor;
         }
         public int GetMatchCount()

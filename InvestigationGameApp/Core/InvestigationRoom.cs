@@ -25,8 +25,19 @@ namespace InvestigationGameApp.Core
                 }
             }
         }
+        public void DeactivateSensors()
+        {
+            foreach (ISensor sensor in Agent.AttachedSensors)
+            {
+                if (sensor != null)
+                {
+                    sensor.Deactivate();
+                }
+            }
+        }
         public void AttachSensor(ISensor sensor, int slot)
         {
+            sensor.Target = Agent;
             Agent.AttachedSensors[slot] = sensor;
         }
         public int GetMatchCount()

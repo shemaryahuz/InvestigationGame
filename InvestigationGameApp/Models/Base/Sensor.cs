@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace InvestigationGameApp.Models.Base
 {
     // base abstract class for implement base-sensor properties and methods for all sensors
-    internal abstract class Sensor: ISensor
+    internal abstract class Sensor : ISensor
     {
         public Sensor(string name, string type)
         {
@@ -17,10 +17,19 @@ namespace InvestigationGameApp.Models.Base
         }
         public string Name { get; }
         public string Type { get; }
+        public IAgent Target { get; set; }
         public bool IsActive { get; set; } = false;
         public virtual void Activate()
         {
             IsActive = true;
+        }
+        public void Deactivate()
+        {
+            IsActive = false;
+        }
+        public virtual string GetData()
+        {
+            return $"Sensor type: {Type}. Sensor Name: {Name}.";
         }
     }
 }

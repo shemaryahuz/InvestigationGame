@@ -18,7 +18,7 @@ namespace InvestigationGameApp.Models.Base
             AttachedSensors = new ISensor[weaknesses.Length];
         }
         public string Name { get; }
-        public string[] Weaknesses { get; }
+        public string[] Weaknesses { get; set; }
         public ISensor[] AttachedSensors { get; set; }
         public bool IsExposed { get; set; } = false;
     }

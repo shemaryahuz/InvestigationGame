@@ -15,7 +15,11 @@ namespace InvestigationGameApp.Models.Sensors
         public override void Activate()
         {
             base.Activate();
-            Console.WriteLine($"The sensor {Name} is recording audio...");
+            Console.WriteLine($"The sensor {Name} is recording audio of {Target.Name}...");
+        }
+        public override string GetData()
+        {
+            return $"{base.GetData()} Features: Can recording audio.";
         }
     }
 }

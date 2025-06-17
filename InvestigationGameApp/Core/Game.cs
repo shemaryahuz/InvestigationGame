@@ -12,10 +12,10 @@ using System.Threading.Tasks;
 
 namespace InvestigationGameApp.Controllers
 {
-    internal class GameController
+    internal class Game
     {
-        private static GameController _instance;
-        private GameController()
+        private static Game _instance;
+        private Game()
         {
             try
             {
@@ -32,11 +32,11 @@ namespace InvestigationGameApp.Controllers
                 Console.WriteLine(e);
             }
         }
-        public static GameController GetInstance()
+        public static Game GetInstance()
         {
             if (_instance is null)
             {
-                _instance = new GameController();
+                _instance = new Game();
             }
             return _instance;
         }
@@ -53,14 +53,14 @@ namespace InvestigationGameApp.Controllers
                     $"Agent {room.Agent.Name} is in the investigation room.\n" +
                     "Your mission: Find all weaknesses to expose the agent!"
                     );
-                // Show available sensors
-                Console.WriteLine("Available sensors:");
+                // Show available sensors with features
+                Console.WriteLine("Available sensors with their features:");
                 foreach (string type in sensorFactory.Sensors.Keys)
                 {
                     Console.WriteLine($"{type} sensors:");
                     foreach (ISensor sensor in sensorFactory.Sensors[type])
                     {
-                        Console.WriteLine($"{sensor.Type} {sensor.Name}");
+                        Console.WriteLine(sensor.GetData());
                     }
                 }
                 Console.WriteLine();
@@ -152,6 +152,7 @@ namespace InvestigationGameApp.Controllers
                 if (sensor != null && slot != null)
                 {
                     room.AttachSensor(sensor, (int)slot - 1);
+                    room.DeactivateSensors();
                     room.ActivateSensors();
                     Console.WriteLine($"Weaknesses found: {room.GetMatchCount()}/{room.Agent.Weaknesses.Length}");
                 }

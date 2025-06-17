@@ -1,99 +1,106 @@
 ﻿# InvestigationGame
 
-A game that simulates interrogating agents using sensors
+A game that simulates interrogating agents using sensors.
 
 ---
 
-# Investigation Game - Basic Feature
+## Features & Structure
 
-## Project Structure
+### Project Structure
 
 ```
 InvestigationGameApp/
-├── Controllers/
-│   └── GameController.cs         # Main game loop and logic
+├── Core/
+│   ├── Game.cs                    # Controls game logic, rules, main loop, and helpers
+│   └── InvestigationRoom.cs       # Holds agent, manages sensors, checks against weaknesses
+├── Factories/
+│   ├── SensorFactory.cs           # Dictionary<string, List<ISensor>>; creates/queries sensors by type
+│   └── AgentFactory.cs            # Dictionary<string, List<IAgent>>; creates/queries agents by type
 ├── Models/
-│   ├── Agents/
-│   │   └── FootAgent.cs         # Example implementation of an agent
-│   ├── Sensors/
-│   │   ├── AudioSensor.cs       # Implements ISensor for audio
-│   │   └── ThermalSensor.cs     # Implements ISensor for thermal
 │   ├── Interfaces/
-│   │   ├── IAgent.cs            # Agent interface
-│   │   └── ISensor.cs           # Sensor interface
+│   │   ├── ISensor.cs             # Sensor interface
+│   │   └── IAgent.cs              # Agent interface
 │   ├── Base/
-│   │   └── Agent.cs             # Base agent class
-│   └── InvestigationRoom.cs     # Represents the room with agent and sensors
-├── Program.cs                   # Entry point
+│   │   ├── Sensor.cs              # Abstract base class for sensors
+│   │   └── Agent.cs               # Abstract base class for agents
+│   ├── Sensors/
+│   │   ├── AudioSensor.cs         # Detects audio weaknesses
+│   │   ├── ThermalSensor.cs       # Reveals one weakness per use
+│   │   └── PulseSensor.cs         # Breaks after 3 uses
+│   └── Agents/
+│       └── FootSoldier.cs         # Sample agent implementation
+├── Program.cs                     # Entry point
 ```
-
-## Implemented Classes and Interfaces
-
-### ISensor (interface)
-Defines the contract for sensors:
-- `Name` (string)
-- `Type` (string)
-- `IsActive` (bool)
-- `Activate()`
-
-### IAgent (interface)
-Defines the contract for agents:
-- `Name` (string)
-- `Weaknesses` (string[])
-- `AttachedSensors` (list/array of ISensor)
-- `IsExposed` (bool)
-- `AttachSensor(ISensor sensor)`
-- `GetMatchCount()`
-
-### AudioSensor (class)
-Implements ISensor for audio detection.
-
-### ThermalSensor (class)
-Implements ISensor for thermal detection.
-
-### Agent (class)
-Implements IAgent, tracks weaknesses and attached sensors.
-
-### InvestigationRoom (class)
-Holds the agent and available sensors.
-
-### GameController (class)
-Handles game setup, main loop, and user interaction:
-- `StartGame()`: Initializes agent and room, prints intro.
-- `GameLoop()`: Handles each turn until agent is exposed or turns run out.
-- `CreateSensor(type)`: Instantiates the correct sensor.
-- `ShowStatus()`: Prints current state each turn.
-- `Run()`: Entry for controller (calls StartGame and GameLoop).
-
-## Program Flow
-
-1. **Entry Point (`Program.cs`):**
-   - Instantiates `GameController` and calls `Run()`.
-
-2. **Start Game (`GameController.cs`):**
-   - Creates an agent (e.g., `FootAgent`) with random weaknesses.
-   - Puts agent in `InvestigationRoom`.
-   - Prints welcome, rules, and available sensors.
-
-3. **Game Loop:**
-   - For up to 10 turns, or until all agent weaknesses are found:
-     - Shows current state (weaknesses found, sensors attached).
-     - Prompts user to choose sensor type (`audio` or `thermal`).
-     - Creates and attaches the selected sensor to the agent.
-     - Activates the sensor and checks for matches.
-     - Prints result ("X/2 weaknesses found").
-     - If an invalid sensor type is entered, prompts again.
-
-4. **End Game:**
-   - If all weaknesses are found: prints success and turn count.
-   - If turn limit reached: prints game over.
-
-## Basic Rules
-
-- Agent has 2 weaknesses (randomly chosen from Audio, Thermal).
-- Each turn, user selects a sensor to try to expose weaknesses.
-- Win by finding both weaknesses before running out of turns.
 
 ---
 
-*For future features, more agent/sensor types and deeper mechanics may be added. This README covers only the currently implemented logic and structure.*
+## Main Components
+
+### Core
+
+- **Game.cs**: Orchestrates the game, shows rules, runs the main loop, provides helper methods.
+- **InvestigationRoom.cs**: Holds an agent, attaches sensors, checks matches to agent’s weaknesses.
+
+### Factories
+
+- **SensorFactory.cs**: Manages a dictionary of sensor types with lists of sensors. Can create new sensors or retrieve by type.
+- **AgentFactory.cs**: Manages a dictionary of agent types with lists of agents. Can create or retrieve agents by type.
+
+### Models
+
+#### Interfaces
+
+- **ISensor**: Common sensor contract:
+  - `Name`, `Type`, `IsActive`, `Activate()`
+- **IAgent**: Common agent contract:
+  - `Name`, `Weaknesses`, `AttachedSensors`, `IsExposed`, `AttachSensor(ISensor)`, `GetMatchCount()`
+
+#### Base (abstract)
+
+- **Sensor**: Base sensor logic.
+- **Agent**: Base agent logic.
+
+#### Sensors
+
+- **AudioSensor**: Matches audio weaknesses.
+- **ThermalSensor**: Each use can reveal one agent weakness.
+- **PulseSensor**: Breaks and becomes unusable after three uses.
+
+#### Agents
+
+- **FootSoldier**: Example agent with weaknesses.
+
+---
+
+## Game Flow & Rules
+
+1. **Start**
+   - Game displays intro and rules.
+   - Agent is created via `AgentFactory`.
+   - Sensors are available via `SensorFactory`.
+   - Agent placed in the `InvestigationRoom`.
+
+2. **Game Loop**
+   - Each turn: 
+     - Shows current status (weaknesses found, sensors used, remaining uses).
+     - User chooses a sensor type (Audio, Thermal, Pulse).
+     - Sensor is attached and activated on the agent.
+     - Shows result (weaknesses found).
+     - ThermalSensor finds one weakness per use.
+     - PulseSensor breaks after 3 uses.
+
+3. **Game End**
+   - Success: All agent weaknesses revealed.
+   - Failure: Turn or sensor limit reached.
+
+### Rules
+
+- Agents have a set of weaknesses (e.g., Audio, Thermal).
+- Sensors reveal weaknesses by matching their type.
+- **ThermalSensor**: Finds one weakness per use.
+- **PulseSensor**: Usable up to 3 times, then breaks.
+- Goal: Expose all agent weaknesses before you run out of turns or sensors.
+
+---
+
+*This README documents the new structure and game logic on the `additional-sensors` branch, including new sensor types, agent factory, and core gameplay. More types and features may be added in future updates.*

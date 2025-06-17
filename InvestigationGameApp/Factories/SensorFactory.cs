@@ -27,21 +27,28 @@ namespace InvestigationGameApp.Factories
         public Dictionary<string, List<ISensor>> Sensors { get; set; } = new Dictionary<string, List<ISensor>>
         {
             ["audio"] = new List<ISensor>(),
-            ["thermal"] = new List<ISensor>()
+            ["thermal"] = new List<ISensor>(),
+            ["pulse"] = new List<ISensor>()
         };
         public void CreateSensors()
         {
-            // Add 20 audio sensors
-            for (int i = 0; i < 5; i++)
+            // Add 2 audio sensors
+            for (int i = 0; i < 2; i++)
             {
                 AudioSensor audioSensor = new AudioSensor($"A{DateTime.Now.Millisecond}{i}");
                 Sensors["audio"].Add(audioSensor);
             }
-            // Add 20 thermal sensors
-            for (int i = 0; i < 5; i++)
+            // Add 2 thermal sensors
+            for (int i = 0; i < 2; i++)
             {
                 ThermalSensor thermalSensor = new ThermalSensor($"T{DateTime.Now.Millisecond}{i}");
                 Sensors["thermal"].Add(thermalSensor);
+            }
+            // Add 2 pulse sensors
+            for (int i = 0; i < 2; i++)
+            {
+                PulseSensor pulseSensor = new PulseSensor($"P{DateTime.Now.Millisecond}{i}");
+                Sensors["pulse"].Add(pulseSensor);
             }
         }
         public ISensor? GetSensor(string sensorType)

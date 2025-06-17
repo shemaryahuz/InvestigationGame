@@ -11,7 +11,7 @@ namespace InvestigationGameApp.Models.Sensors
     // Class that represents ThermalSensor
     internal class ThermalSensor : Sensor, ISensor
     {
-        public ThermalSensor(string name) : base(name, "Thermal") { }
+        public ThermalSensor(string name) : base(name, "thermal") { }
         public override void Activate()
         {
             base.Activate();

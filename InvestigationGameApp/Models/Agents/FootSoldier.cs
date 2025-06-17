@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 namespace InvestigationGameApp.Models.Agents
 {
     // Class that represents FootAgent, has 5 weaknesses from 2 types
-    internal class FootAgent: Agent, IAgent
+    internal class FootSoldier: Agent, IAgent
     {
-        public FootAgent(string name) : base(name, 2, new string[] { "Audio", "Thermal" }) { }
+        public FootSoldier(string name, string[] weaknesses) : base(name, weaknesses) { }
     }
 }

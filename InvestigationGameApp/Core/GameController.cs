@@ -1,4 +1,5 @@
 ﻿using InvestigationGameApp.Core;
+using InvestigationGameApp.Factories;
 using InvestigationGameApp.Models.Agents;
 using InvestigationGameApp.Models.Base;
 using InvestigationGameApp.Models.Interfaces;
@@ -13,97 +14,133 @@ namespace InvestigationGameApp.Controllers
 {
     internal class GameController
     {
+        private static GameController _instance;
+        private GameController()
+        {
+            try
+            {
+                // Create factories
+                sensorFactory = SensorFactory.GetInstance();
+                agentFactory = AgentFactory.GetInstance();
+                // Add agent
+                IAgent? agent = agentFactory.GetAgent("footSoldier");
+                // Create room
+                room = new InvestigationRoom(agent);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+        public static GameController GetInstance()
+        {
+            if (_instance is null)
+            {
+                _instance = new GameController();
+            }
+            return _instance;
+        }
         private InvestigationRoom room;
+        private SensorFactory sensorFactory;
+        private AgentFactory agentFactory;
         private void StartGame()
         {
-            // Create room with agent
-            FootAgent agent = new FootAgent("ali");
-            room = new InvestigationRoom(agent);
-
-            // Show rules
-            Console.WriteLine(
-                "=== Investigation Game Started ===\n" +
-                $"Agent {room.Agent.Name} is in the investigation room.\n" +
-                "Your mission: Find all weaknesses to expose the agent!"
-                );
-            // Show available sensors
-            Console.WriteLine("Available sensors:");
-            foreach (ISensor sensor in room.AvailableSensors)
+            try
             {
-                Console.WriteLine($"{sensor.Type} {sensor.Name}");
+                // Show rules
+                Console.WriteLine(
+                    "=== Investigation Game Started ===\n" +
+                    $"Agent {room.Agent.Name} is in the investigation room.\n" +
+                    "Your mission: Find all weaknesses to expose the agent!"
+                    );
+                // Show available sensors
+                Console.WriteLine("Available sensors:");
+                foreach (string type in sensorFactory.Sensors.Keys)
+                {
+                    Console.WriteLine($"{type} sensors:");
+                    foreach (ISensor sensor in sensorFactory.Sensors[type])
+                    {
+                        Console.WriteLine($"{sensor.Type} {sensor.Name}");
+                    }
+                }
+                Console.WriteLine();
             }
-            Console.WriteLine();
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
         private void ShowStatus()
         {
-            // Show match count
-            Console.WriteLine(
-                $"Agent {room.Agent.Name}.\n" +
-                $"Weaknesses found: {room.Agent.GetMatchCount()}/{room.Agent.Weaknesses.Length}"
-                );
-            // Show current attached sensors
-            Console.WriteLine("Current sensors:");
-            for (int i = 0; i < room.Agent.AttachedSensors.Length; i++)
+            try
             {
-                if (room.Agent.AttachedSensors[i] != null)
+                // Show match count
+                Console.WriteLine(
+                    $"Agent {room.Agent.Name}.\n" +
+                    $"Weaknesses found: {room.GetMatchCount()}/{room.Agent.Weaknesses.Length}"
+                    );
+                // Show current attached sensors
+                Console.WriteLine("Current sensors:");
+                for (int i = 0; i < room.Agent.AttachedSensors.Length; i++)
                 {
-                    ISensor slot = room.Agent.AttachedSensors[i];
-                    Console.WriteLine($"Slot {i + 1}: {slot.Type} {slot.Name} - Active: {slot.IsActive}");
+                    if (room.Agent.AttachedSensors[i] != null)
+                    {
+                        ISensor slot = room.Agent.AttachedSensors[i];
+                        Console.WriteLine($"Slot {i + 1}: {slot.Type} {slot.Name} - Active: {slot.IsActive}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Slot {i + 1}: Empty");
+                    }
                 }
-                else
-                {
-                    Console.WriteLine($"Slot {i + 1}: Empty");
-                }
             }
-        }
-        private ISensor? CreateSensor(string type)
-        {
-            ISensor sensor = null;
-            if (type == "audio")
+            catch(Exception e)
             {
-                sensor = new AudioSensor($"A{DateTime.Now.Millisecond}");
+                Console.WriteLine(e);
             }
-            else if (type == "thermal")
-            {
-                sensor = new ThermalSensor($"T{DateTime.Now.Millisecond}");
-            }
-            return sensor;
         }
         private void GameLoop()
         {
             int turnCount = 0;
             int turnLimit = 10;
-            while (!room.Agent.IsExposed && turnCount < turnLimit)
+            try
             {
-                // Show and increase turn count
-                turnCount++;
-                Console.WriteLine($"=== Turn {turnCount} ===");
-                Console.WriteLine($"=== {turnLimit - turnCount} Turns left ===");
-                ShowStatus();
-                // Get choice
-                Console.WriteLine("Choose sensor type ('audio' or 'thermal'):");
-                string input = Console.ReadLine()?.ToLower();
-                // Create sensor
-                ISensor? sensor = CreateSensor(input);
-                if (sensor != null)
+                while (!room.Agent.IsExposed && turnCount < turnLimit)
                 {
-                    room.Agent.AttachSensor(sensor);
-                    room.ActivateSensors();
-                    Console.WriteLine($"Weaknesses found: {room.Agent.GetMatchCount()}/{room.Agent.Weaknesses.Length}");
+                    // Show and increase turn count
+                    turnCount++;
+                    Console.WriteLine($"=== Turn {turnCount} ===");
+                    Console.WriteLine($"=== {turnLimit - turnCount} Turns left ===");
+                    ShowStatus();
+                    // Get choice
+                    Console.WriteLine("Choose sensor type ('audio' or 'thermal'):");
+                    string input = Console.ReadLine()?.ToLower();
+                    // Create sensor
+                    ISensor? sensor = sensorFactory.GetSensor(input);
+                    if (sensor != null)
+                    {
+                        room.AttachSensor(sensor);
+                        room.ActivateSensors();
+                        Console.WriteLine($"Weaknesses found: {room.GetMatchCount()}/{room.Agent.Weaknesses.Length}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid sensor type! Use 'audio' or 'thermal'");
+                    }
+                }
+                if (room.Agent.IsExposed)
+                {
+                    Console.WriteLine("SUCCESS! Agent exposed!");
+                    Console.WriteLine($"Mission completed in {turnCount} turns.");
                 }
                 else
                 {
-                    Console.WriteLine("Invalid sensor type! Use 'audio' or 'thermal'");
+                    Console.WriteLine("Game Over - Turn limit reached!");
                 }
             }
-            if (room.Agent.IsExposed)
+            catch(Exception e)
             {
-                Console.WriteLine("SUCCESS! Agent exposed!");
-                Console.WriteLine($"Mission completed in {turnCount} turns.");
-            }
-            else
-            {
-                Console.WriteLine("Game Over - Turn limit reached!");
+                Console.WriteLine(e);
             }
         }
         public void Run()

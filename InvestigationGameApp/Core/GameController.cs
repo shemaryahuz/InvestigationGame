@@ -17,7 +17,7 @@ namespace InvestigationGameApp.Controllers
         private void StartGame()
         {
             // Create room with agent
-            FootAgent agent = new("ali");
+            FootAgent agent = new FootAgent("ali");
             room = new InvestigationRoom(agent);
 
             // Show rules

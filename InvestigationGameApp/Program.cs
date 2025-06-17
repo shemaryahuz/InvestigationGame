@@ -6,7 +6,7 @@ namespace InvestigationGameApp
     {
         static void Main(string[] args)
         {
-            GameController controller = GameController.GetInstance();
+            Game controller = Game.GetInstance();
             controller.Run();
         }
     }

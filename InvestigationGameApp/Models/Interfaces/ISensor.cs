@@ -11,8 +11,10 @@ namespace InvestigationGameApp.Models.Interfaces
     {
         string Name { get; }
         string Type { get; }
+        IAgent Target { get; set; }
         bool IsActive { get; set; }
         void Activate();
-        IAgent Target { get; set; }
+        void Deactivate();
+        string GetData();
     }
 }

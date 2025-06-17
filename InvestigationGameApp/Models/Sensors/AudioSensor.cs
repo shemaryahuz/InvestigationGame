@@ -11,7 +11,11 @@ namespace InvestigationGameApp.Models.Sensors
     // Class that represents AudioSensor
     internal class AudioSensor: Sensor, ISensor
     {
-        public AudioSensor(string name) : base(name) { }
-        public override string Type { get; } = "Audio";
+        public AudioSensor(string name) : base(name, "audio") { }
+        public override void Activate()
+        {
+            base.Activate();
+            Console.WriteLine($"The sensor {Name} is recording audio...");
+        }
     }
 }

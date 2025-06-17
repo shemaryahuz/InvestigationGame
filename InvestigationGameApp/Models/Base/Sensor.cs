@@ -10,15 +10,15 @@ namespace InvestigationGameApp.Models.Base
     // base abstract class for implement base-sensor properties and methods for all sensors
     internal abstract class Sensor: ISensor
     {
-        public Sensor(string name)
+        public Sensor(string name, string type)
         {
             Name = name;
-            IsActive = false;
+            Type = type;
         }
         public string Name { get; }
-        public abstract string Type { get; }
-        public bool IsActive { get; set; }
-        public void Activate()
+        public string Type { get; }
+        public bool IsActive { get; set; } = false;
+        public virtual void Activate()
         {
             IsActive = true;
         }

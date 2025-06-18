@@ -19,7 +19,8 @@ InvestigationGameApp/
 ├── Models/
 │   ├── Interfaces/
 │   │   ├── ISensor.cs             # Sensor interface
-│   │   └── IAgent.cs              # Agent interface
+│   │   ├── IAgent.cs              # Agent interface
+│   │   └── IAttacker.cs           # For agents that can attack (e.g., SquadLeader)
 │   ├── Base/
 │   │   ├── Sensor.cs              # Abstract base class for sensors
 │   │   └── Agent.cs               # Abstract base class for agents
@@ -28,7 +29,8 @@ InvestigationGameApp/
 │   │   ├── ThermalSensor.cs       # Reveals one weakness per use
 │   │   └── PulseSensor.cs         # Breaks after 3 uses
 │   └── Agents/
-│       └── FootSoldier.cs         # Sample agent implementation
+│       ├── FootSoldier.cs         # Sample agent implementation
+│       └── SquadLeader.cs         # New agent: attacks every 3 turns, has 4 weaknesses, can remove sensors
 ├── Program.cs                     # Entry point
 ```
 
@@ -54,6 +56,7 @@ InvestigationGameApp/
   - `Name`, `Type`, `IsActive`, `Activate()`
 - **IAgent**: Common agent contract:
   - `Name`, `Weaknesses`, `AttachedSensors`, `IsExposed`, `AttachSensor(ISensor)`, `GetMatchCount()`
+- **IAttacker**: (NEW) Interface for agents that can attack (e.g., SquadLeader), with the `Attack()` method.
 
 #### Base (abstract)
 
@@ -69,17 +72,19 @@ InvestigationGameApp/
 #### Agents
 
 - **FootSoldier**: Example agent with weaknesses.
+- **SquadLeader**: (NEW) Can attack every 3 turns, has 4 weaknesses, and removes one attached sensor at random when attacking.
 
 ---
 
 ## Game Flow & Rules
+
+### Level 1
 
 1. **Start**
    - Game displays intro and rules.
    - Agent is created via `AgentFactory`.
    - Sensors are available via `SensorFactory`.
    - Agent placed in the `InvestigationRoom`.
-
 2. **Game Loop**
    - Each turn: 
      - Shows current status (weaknesses found, sensors used, remaining uses).
@@ -88,10 +93,16 @@ InvestigationGameApp/
      - Shows result (weaknesses found).
      - ThermalSensor finds one weakness per use.
      - PulseSensor breaks after 3 uses.
-
 3. **Game End**
    - Success: All agent weaknesses revealed.
    - Failure: Turn or sensor limit reached.
+
+### Level 2 (NEW)
+
+- **SquadLeader Agent**
+  - In addition to the above rules, the SquadLeader attacks every 3 turns.
+  - When attacking, the SquadLeader removes (randomly) one attached sensor, making the interrogation harder.
+  - The IAttacker interface underlies this attack feature.
 
 ### Rules
 
@@ -99,8 +110,14 @@ InvestigationGameApp/
 - Sensors reveal weaknesses by matching their type.
 - **ThermalSensor**: Finds one weakness per use.
 - **PulseSensor**: Usable up to 3 times, then breaks.
+- **SquadLeader**: Attacks every 3 turns, removing a sensor.
 - Goal: Expose all agent weaknesses before you run out of turns or sensors.
 
 ---
 
-*This README documents the new structure and game logic on the `additional-sensors` branch, including new sensor types, agent factory, and core gameplay. More types and features may be added in future updates.*
+*This README documents the new structure and game logic on the `additional-agents` branch, including the new SquadLeader agent, attack feature, and core gameplay. More types and features may be added in future updates.*
+
+---
+
+**See all recent changes and code for details:**  
+[Commits on additional-agents branch](https://github.com/shemaryahuz/InvestigationGame/commits?sha=additional-agents&per_page=20)vvv

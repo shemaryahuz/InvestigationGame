@@ -13,7 +13,8 @@ namespace InvestigationGameApp.Factories
         private static AgentFactory _instance;
         private AgentFactory()
         {
-            CreateAgents();
+            CreateFootSoldiers();
+            CreateSquadLeaders();
         }
         public static AgentFactory GetInstance()
         {
@@ -25,17 +26,29 @@ namespace InvestigationGameApp.Factories
         }
         public Dictionary<string, List<IAgent>> Agents { get; set; } = new Dictionary<string, List<IAgent>>
         {
-            ["footSoldier"] = new List<IAgent>()
+            ["footSoldier"] = new List<IAgent>(),
+            ["squadLeader"] = new List<IAgent>()
         };
-        public void CreateAgents()
+        public void CreateFootSoldiers()
         {
-            // Add foot soldiers
+            int weaknessesLength = 2;
             for (int i = 0; i < 5; i++)
             {
                 string[] types = GetSensorTypes();
-                string[] weaknesses = GetRandomWeaknesses(2, types);
+                string[] weaknesses = GetRandomWeaknesses(weaknessesLength, types);
                 FootSoldier footSoldier = new FootSoldier($"footSoldier{DateTime.Now.Millisecond}", weaknesses);
                 Agents["footSoldier"].Add(footSoldier);
+            }
+        }
+        public void CreateSquadLeaders()
+        {
+            int weaknessesLength = 4;
+            for (int i = 0; i < 5; i++)
+            {
+                string[] types = GetSensorTypes();
+                string[] weaknesses = GetRandomWeaknesses(weaknessesLength, types);
+                SquadLeader squadLeader = new SquadLeader($"squadLeader{DateTime.Now.Millisecond}", weaknesses);
+                Agents["squadLeader"].Add(squadLeader);
             }
         }
         public IAgent? GetAgent(string agentType)
@@ -61,12 +74,12 @@ namespace InvestigationGameApp.Factories
             }
             return types.ToArray();
         }
-        private string[] GetRandomWeaknesses(int amount, string[] types)
+        private string[] GetRandomWeaknesses(int length, string[] types)
         {
-            string[] weaknesses = new string[amount];
+            string[] weaknesses = new string[length];
             // Add random weaknesses from sensorTypes
             Random random = new Random();
-            for (int i = 0; i < amount; i++)
+            for (int i = 0; i < length; i++)
             {
                 int randomIndex = random.Next(types.Length);
                 weaknesses[i] = types[randomIndex];

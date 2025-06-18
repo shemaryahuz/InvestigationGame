@@ -10,12 +10,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InvestigationGameApp.Controllers
+namespace InvestigationGameApp.Core
 {
     internal class Game
     {
-        private static Game _instance;
-        private Game()
+        public Game(string agentType)
         {
             try
             {
@@ -23,26 +22,20 @@ namespace InvestigationGameApp.Controllers
                 sensorFactory = SensorFactory.GetInstance();
                 agentFactory = AgentFactory.GetInstance();
                 // Add agent
-                IAgent? agent = agentFactory.GetAgent("footSoldier");
+                IAgent? agent = agentFactory.GetAgent(agentType);
                 // Create room
                 room = new InvestigationRoom(agent);
             }
             catch(Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
             }
-        }
-        public static Game GetInstance()
-        {
-            if (_instance is null)
-            {
-                _instance = new Game();
-            }
-            return _instance;
         }
         private InvestigationRoom room;
         private SensorFactory sensorFactory;
         private AgentFactory agentFactory;
+        private int turnCount = 0;
+        private int turnLimit = 10;
         private void StartGame()
         {
             try
@@ -54,15 +47,8 @@ namespace InvestigationGameApp.Controllers
                     "Your mission: Find all weaknesses to expose the agent!"
                     );
                 // Show available sensors with features
-                Console.WriteLine("Available sensors with their features:");
-                foreach (string type in sensorFactory.Sensors.Keys)
-                {
-                    Console.WriteLine($"{type} sensors:");
-                    foreach (ISensor sensor in sensorFactory.Sensors[type])
-                    {
-                        Console.WriteLine(sensor.GetData());
-                    }
-                }
+                Console.WriteLine("Sensors types with their features:");
+
                 Console.WriteLine();
             }
             catch (Exception e)
@@ -121,10 +107,16 @@ namespace InvestigationGameApp.Controllers
             }
             return null;
         }
+        private void TryAttack()
+        {
+            // Attack if the agent is attacker and the turn got to the attacker's attack frequency
+            if (room.Agent is IAttacker attacker && turnCount % attacker.AttackFrequency == 0)
+            {
+                attacker.Attack();
+            }
+        }
         private void GameLoop()
         {
-            int turnCount = 0;
-            int turnLimit = 10;
             while (!room.Agent.IsExposed && turnCount < turnLimit)
             {
                 // Show and increase turn count
@@ -132,7 +124,7 @@ namespace InvestigationGameApp.Controllers
                 Console.WriteLine($"=== Turn {turnCount} ===");
                 Console.WriteLine($"=== {turnLimit - turnCount} Turns left ===");
                 ShowStatus();
-                ISensor sensor = null;
+                ISensor? sensor = null;
                 string? sensorChoice = GetSensorChoice();
                 if (sensorChoice != null && sensorFactory.Sensors.ContainsKey(sensorChoice))
                 {
@@ -160,6 +152,7 @@ namespace InvestigationGameApp.Controllers
                 {
                     Console.WriteLine($"Invalid slot! Use number from 1 to {room.Agent.AttachedSensors.Length}");
                 }
+                TryAttack();
             }
             if (room.Agent.IsExposed)
             {

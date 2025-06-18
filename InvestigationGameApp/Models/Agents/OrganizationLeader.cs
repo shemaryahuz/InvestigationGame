@@ -1,5 +1,4 @@
-﻿using InvestigationGameApp.Models.Base;
-using InvestigationGameApp.Models.Interfaces;
+﻿using InvestigationGameApp.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace InvestigationGameApp.Models.Agents
 {
-    internal class OrganizationLeader : Agent, IAttacker
+    internal class OrganizationLeader : AgentBase, IAttacker
     {
         private const int weaknessesLength = 8;
         public OrganizationLeader(string[] weaknesses)

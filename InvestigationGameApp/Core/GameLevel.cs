@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace InvestigationGameApp.Core
 {
-    internal class Game
+    internal class GameLevel
     {
-        public Game(string agentType)
+        public GameLevel(string agentType)
         {
             // Create factories
             sensorFactory = SensorFactory.GetInstance();

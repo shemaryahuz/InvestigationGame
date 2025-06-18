@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InvestigationGameApp.Models.Base
+namespace InvestigationGameApp.Models.Sensors
 {
     // base abstract class for implement base-sensor properties and methods for all sensors
-    internal abstract class Sensor : ISensor
+    internal abstract class SensorBase : ISensor
     {
-        protected Sensor(string name, string type)
+        protected SensorBase(string name, string type)
         {
             Name = name;
             Type = type;

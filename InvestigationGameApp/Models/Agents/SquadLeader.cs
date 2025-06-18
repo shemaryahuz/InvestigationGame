@@ -1,5 +1,4 @@
-﻿using InvestigationGameApp.Models.Base;
-using InvestigationGameApp.Models.Interfaces;
+﻿using InvestigationGameApp.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 namespace InvestigationGameApp.Models.Agents
 {
     // Class that represents SquadLeader, has 4 weaknesses and attacks every 3 turns
-    internal class SquadLeader : Agent, IAgent, IAttacker
+    internal class SquadLeader : AgentBase, IAgent, IAttacker
     {
         private const int weaknessesLength = 4;
         public SquadLeader(string[] weaknesses)

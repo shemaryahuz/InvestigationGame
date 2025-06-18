@@ -6,13 +6,13 @@ namespace InvestigationGameApp
     {
         static void Main(string[] args)
         {
-            Game level1 = new Game("Foot Soldier");
+            GameLevel level1 = new GameLevel("Foot Soldier");
             level1.Run();
-            Game level2 = new Game("Squad Leader");
+            GameLevel level2 = new GameLevel("Squad Leader");
             level2.Run();
-            Game level3 = new Game("Senior Commander");
+            GameLevel level3 = new GameLevel("Senior Commander");
             level3.Run();
-            Game level4 = new Game("Organization Leader");
+            GameLevel level4 = new GameLevel("Organization Leader");
             level4.Run();
         }
     }

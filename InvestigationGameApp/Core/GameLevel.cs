@@ -18,22 +18,16 @@ namespace InvestigationGameApp.Core
         {
             // Create factories
             sensorFactory = SensorFactory.GetInstance();
-            agentFactory = AgentFactory.GetInstance();
             // Add agent
-            IAgent? agent = agentFactory.GetAgent(agentType);
-            if (agent == null)
-            {
-                throw new ArgumentException($"Agent type '{agentType}' does not exist.");
-            }
+            IAgent agent = AgentFactory.GetAgent(agentType);
             // Create room
             room = new InvestigationRoom(agent);
         }
         private InvestigationRoom room;
         private SensorFactory sensorFactory;
-        private AgentFactory agentFactory;
         private int turnCount = 0;
         private int turnLimit = 10;
-        private void StartGame()
+        public void ShowRules()
         {
             try
             {
@@ -112,7 +106,7 @@ namespace InvestigationGameApp.Core
                 attacker.Attack();
             }
         }
-        private void GameLoop()
+        public void GameLoop()
         {
             while (!room.Agent.IsExposed && turnCount < turnLimit)
             {
@@ -160,11 +154,6 @@ namespace InvestigationGameApp.Core
             {
                 Console.WriteLine("Game Over - Turn limit reached!");
             }
-        }
-        public void Run()
-        {
-            StartGame();
-            GameLoop();
         }
     }
 }

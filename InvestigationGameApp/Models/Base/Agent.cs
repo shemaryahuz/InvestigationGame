@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InvestigationGameApp.Models.Agents
+namespace InvestigationGameApp.Models.Base
 {
     // base abstract class for implement base-agent properties and methods for all agents
-    internal abstract class AgentBase: IAgent
+    internal abstract class Agent: IAgent
     {
-        public AgentBase(string type, string[] weaknesses, int weaknessesLength)
+        public Agent(string type, string[] weaknesses, int weaknessesLength)
         {
             // Validate weaknesses length
             if (weaknesses.Length != weaknessesLength)

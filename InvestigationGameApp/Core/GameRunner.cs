@@ -1,4 +1,5 @@
 ﻿using InvestigationGameApp.GameData;
+using InvestigationGameApp.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,15 +8,12 @@ using System.Threading.Tasks;
 
 namespace InvestigationGameApp.Core
 {
-    internal class GameRunner
+    internal static class GameRunner
     {
-        public GameRunner(LevelManager levelManager)
+        public static void Run(GameLevel level)
         {
-
-        }
-        public void RunAllLevels()
-        {
-
+            level.ShowRules();
+            level.GameLoop();
         }
     }
 }

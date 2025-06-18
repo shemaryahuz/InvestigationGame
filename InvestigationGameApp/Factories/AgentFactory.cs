@@ -1,4 +1,5 @@
 ﻿using InvestigationGameApp.Models.Agents;
+using InvestigationGameApp.Models.Base;
 using InvestigationGameApp.Models.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -8,58 +9,47 @@ using System.Threading.Tasks;
 
 namespace InvestigationGameApp.Factories
 {
-    internal class AgentFactory
+    internal static class AgentFactory
     {
-        private static AgentFactory _instance;
-        private AgentFactory()
+        public static IAgent GetAgent(string agentType)
         {
-            CreateFootSoldier();
-            CreateSquadLeader();
-            CreateSeniorCommander();
-            CreateOrganizationLeader();
-        }
-        public static AgentFactory GetInstance()
-        {
-            if (_instance is null)
+            switch (agentType)
             {
-                _instance = new AgentFactory();
+                case "Squad Leader":
+                    return CreateFootSoldier();
+                case "Senior Commander":
+                    return CreateSeniorCommander();
+                case "Organization Leader":
+                    return CreateOrganizationLeader();
+                default:
+                    return CreateFootSoldier();
             }
-            return _instance;
         }
-        public Dictionary<string, IAgent> Agents { get; set; } = new Dictionary<string, IAgent > ();
-        public void CreateFootSoldier()
+        public static FootSoldier CreateFootSoldier()
         {
             int weaknessesLength = 2;
             string[] weaknesses = GetRandomWeaknesses(weaknessesLength, GetSensorTypes());
-            Agents["Foot Soldier"] = new FootSoldier(weaknesses);
+            return new FootSoldier(weaknesses);
         }
-        public void CreateSquadLeader()
+        public static SquadLeader CreateSquadLeader()
         {
             int weaknessesLength = 4;
             string[] weaknesses = GetRandomWeaknesses(weaknessesLength, GetSensorTypes());
-            Agents["Squad Leader"] = new SquadLeader(weaknesses);
+            return new SquadLeader(weaknesses);
         }
-        public void CreateSeniorCommander()
+        public static SeniorCommander CreateSeniorCommander()
         {
             int weaknessesLength = 6;
             string[] weaknesses = GetRandomWeaknesses(weaknessesLength, GetSensorTypes());
-            Agents["Senior Commander"] = new SeniorCommander(weaknesses);
+            return new SeniorCommander(weaknesses);
         }
-        public void CreateOrganizationLeader()
+        public static OrganizationLeader CreateOrganizationLeader()
         {
             int weaknessesLength = 8;
             string[] weaknesses = GetRandomWeaknesses(weaknessesLength, GetSensorTypes());
-            Agents["Organization Leader"] = new OrganizationLeader(weaknesses);
+            return new OrganizationLeader(weaknesses);
         }
-        public IAgent? GetAgent(string agentType)
-        {
-            if (Agents.ContainsKey(agentType))
-            {
-                return Agents[agentType];
-            }
-            return null;
-        }
-        private string[] GetSensorTypes()
+        private static string[] GetSensorTypes()
         {
             List<string> types = new List<string>();
             SensorFactory sensorFactory = SensorFactory.GetInstance();
@@ -69,7 +59,7 @@ namespace InvestigationGameApp.Factories
             }
             return types.ToArray();
         }
-        private string[] GetRandomWeaknesses(int length, string[] types)
+        private static string[] GetRandomWeaknesses(int length, string[] types)
         {
             string[] weaknesses = new string[length];
             // Add random weaknesses from sensorTypes

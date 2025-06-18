@@ -1,4 +1,5 @@
-﻿using InvestigationGameApp.Models.Interfaces;
+﻿using InvestigationGameApp.Models.Base;
+using InvestigationGameApp.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace InvestigationGameApp.Models.Agents
 {
-    internal class SeniorCommander : AgentBase, IAgent, IAttacker
+    internal class SeniorCommander : Agent, IAgent, IAttacker
     {
         private const int weaknessesLength = 6;
         public SeniorCommander(string[] weaknesses)

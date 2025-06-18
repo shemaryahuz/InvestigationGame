@@ -11,8 +11,8 @@ namespace InvestigationGameApp.Models.Agents
     internal class OrganizationLeader : Agent, IAttacker
     {
         private const int weaknessesLength = 8;
-        public OrganizationLeader(string name, string[] weaknesses)
-            : base(name, weaknesses, weaknessesLength) { }
+        public OrganizationLeader(string[] weaknesses)
+            : base("Organization Leader", weaknesses, weaknessesLength) { }
         public bool HasSensors { get; set; } = false;
         public int AttackFrequency { get; set; } = 3;
         public void Attack()
@@ -24,7 +24,7 @@ namespace InvestigationGameApp.Models.Agents
                     if (AttachedSensors[i] != null)
                     {
                         Console.WriteLine(
-                                $"Senior Commander {Name} removed Sensor {AttachedSensors[i].Type} {AttachedSensors[i].Name}!\n" +
+                                $"{Type} removed Sensor {AttachedSensors[i].Type} {AttachedSensors[i].Name}!\n" +
                                 $"Slot {i + 1} is empty."
                                 );
                         AttachedSensors[i] = null!;

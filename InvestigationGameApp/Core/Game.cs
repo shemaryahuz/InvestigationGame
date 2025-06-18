@@ -43,7 +43,7 @@ namespace InvestigationGameApp.Core
                 // Show rules
                 Console.WriteLine(
                     "=== Investigation Game Started ===\n" +
-                    $"Agent {room.Agent.Name} is in the investigation room.\n" +
+                    $"Agent {room.Agent.Type} is in the investigation room.\n" +
                     "Your mission: Find all weaknesses to expose the agent!"
                     );
                 // Show available sensors with features
@@ -62,7 +62,7 @@ namespace InvestigationGameApp.Core
             {
                 // Show match count
                 Console.WriteLine(
-                    $"Agent {room.Agent.Name}.\n" +
+                    $"Agent {room.Agent.Type}.\n" +
                     $"Weaknesses found: {room.GetMatchCount()}/{room.Agent.Weaknesses.Length}"
                     );
                 // Show current attached sensors

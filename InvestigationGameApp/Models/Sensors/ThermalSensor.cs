@@ -21,7 +21,7 @@ namespace InvestigationGameApp.Models.Sensors
                 nextWeakness = 0;
             }
             Console.WriteLine(
-                $"The sensor {Name} is checking {Target.Name}'s temperature... " +
+                $"The sensor {Name} is checking {Target.Type}'s temperature... " +
                 $"weakness {nextWeakness + 1} found! it's {Target.Weaknesses[nextWeakness]}");
             nextWeakness++;
         }

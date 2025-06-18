@@ -12,7 +12,7 @@ namespace InvestigationGameApp.Models.Agents
     internal class FootSoldier: Agent, IAgent
     {
         private const int weaknessesLength = 2;
-        public FootSoldier(string name, string[] weaknesses)
-            : base(name, weaknesses, weaknessesLength) { }
+        public FootSoldier(string[] weaknesses)
+            : base("Foot Soldier", weaknesses, weaknessesLength) { }
     }
 }

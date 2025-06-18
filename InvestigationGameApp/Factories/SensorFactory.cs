@@ -32,20 +32,20 @@ namespace InvestigationGameApp.Factories
         };
         public void CreateSensors()
         {
-            // Add 2 audio sensors
-            for (int i = 0; i < 2; i++)
+            // Add 5 audio sensors
+            for (int i = 0; i < 5; i++)
             {
                 AudioSensor audioSensor = new AudioSensor($"A{DateTime.Now.Millisecond}{i}");
                 Sensors["audio"].Add(audioSensor);
             }
-            // Add 2 thermal sensors
-            for (int i = 0; i < 2; i++)
+            // Add 5 thermal sensors
+            for (int i = 0; i < 5; i++)
             {
                 ThermalSensor thermalSensor = new ThermalSensor($"T{DateTime.Now.Millisecond}{i}");
                 Sensors["thermal"].Add(thermalSensor);
             }
-            // Add 2 pulse sensors
-            for (int i = 0; i < 2; i++)
+            // Add 5 pulse sensors
+            for (int i = 0; i < 5; i++)
             {
                 PulseSensor pulseSensor = new PulseSensor($"P{DateTime.Now.Millisecond}{i}");
                 Sensors["pulse"].Add(pulseSensor);

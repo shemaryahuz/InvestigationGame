@@ -12,7 +12,7 @@ namespace InvestigationGameApp.Core
     {
         public static void Run(GameLevel level)
         {
-            level.ShowRules();
+            Displayer.ShowRules(level.InvestigationRoom);
             level.GameLoop();
         }
     }

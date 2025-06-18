@@ -11,20 +11,6 @@ namespace InvestigationGameApp.Factories
 {
     internal static class AgentFactory
     {
-        public static IAgent GetAgent(string agentType)
-        {
-            switch (agentType)
-            {
-                case "Squad Leader":
-                    return CreateFootSoldier();
-                case "Senior Commander":
-                    return CreateSeniorCommander();
-                case "Organization Leader":
-                    return CreateOrganizationLeader();
-                default:
-                    return CreateFootSoldier();
-            }
-        }
         public static FootSoldier CreateFootSoldier()
         {
             int weaknessesLength = 2;

@@ -13,13 +13,13 @@ namespace InvestigationGameApp.GameData
     {
         public void RunAllLevels()
         {
-            GameLevel level1 = new GameLevel("Foot Soldier");
+            GameLevel level1 = new GameLevel(AgentFactory.CreateFootSoldier());
             GameRunner.Run(level1);
-            GameLevel level2 = new GameLevel("Squad Leader");
+            GameLevel level2 = new GameLevel(AgentFactory.CreateSquadLeader());
             GameRunner.Run(level2);
-            GameLevel level3 = new GameLevel("Senior Commander");
+            GameLevel level3 = new GameLevel(AgentFactory.CreateSeniorCommander());
             GameRunner.Run(level3);
-            GameLevel level4 = new GameLevel("Organization Leader");
+            GameLevel level4 = new GameLevel(AgentFactory.CreateOrganizationLeader());
             GameRunner.Run(level4);
         }
     }

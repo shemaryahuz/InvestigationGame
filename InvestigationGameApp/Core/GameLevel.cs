@@ -4,6 +4,7 @@ using InvestigationGameApp.Models.Agents;
 using InvestigationGameApp.Models.Base;
 using InvestigationGameApp.Models.Interfaces;
 using InvestigationGameApp.Models.Sensors;
+using InvestigationGameApp.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,66 +15,35 @@ namespace InvestigationGameApp.Core
 {
     internal class GameLevel
     {
-        public GameLevel(string agentType)
+        public GameLevel(IAgent agent)
         {
-            // Create factories
-            sensorFactory = SensorFactory.GetInstance();
-            // Add agent
-            IAgent agent = AgentFactory.GetAgent(agentType);
             // Create room
-            room = new InvestigationRoom(agent);
+            InvestigationRoom = new InvestigationRoom(agent);
         }
-        private InvestigationRoom room;
-        private SensorFactory sensorFactory;
+        public InvestigationRoom InvestigationRoom;
+        private SensorFactory sensorFactory = SensorFactory.GetInstance();
         private int turnCount = 0;
         private int turnLimit = 10;
-        public void ShowRules()
-        {
-            try
-            {
-                // Show rules
-                Console.WriteLine(
-                    "=== Investigation Game Started ===\n" +
-                    $"Agent {room.Agent.Type} is in the investigation room.\n" +
-                    "Your mission: Find all weaknesses to expose the agent!"
-                    );
-                // Show available sensors with features
-                Console.WriteLine("Sensors types with their features:");
-
-                Console.WriteLine();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
         private void ShowStatus()
         {
-            try
+            // Show match count
+            Console.WriteLine(
+                $"Agent {InvestigationRoom.Agent.Type}.\n" +
+                $"Weaknesses found: {InvestigationRoom.GetMatchCount()}/{InvestigationRoom.Agent.Weaknesses.Length}"
+                );
+            // Show current attached sensors
+            Console.WriteLine("Current sensors:");
+            for (int i = 0; i < InvestigationRoom.Agent.AttachedSensors.Length; i++)
             {
-                // Show match count
-                Console.WriteLine(
-                    $"Agent {room.Agent.Type}.\n" +
-                    $"Weaknesses found: {room.GetMatchCount()}/{room.Agent.Weaknesses.Length}"
-                    );
-                // Show current attached sensors
-                Console.WriteLine("Current sensors:");
-                for (int i = 0; i < room.Agent.AttachedSensors.Length; i++)
+                if (InvestigationRoom.Agent.AttachedSensors[i] != null)
                 {
-                    if (room.Agent.AttachedSensors[i] != null)
-                    {
-                        ISensor slot = room.Agent.AttachedSensors[i];
-                        Console.WriteLine($"Slot {i + 1}: {slot.Type} {slot.Name} - Active: {slot.IsActive}");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Slot {i + 1}: Empty");
-                    }
+                    ISensor slot = InvestigationRoom.Agent.AttachedSensors[i];
+                    Console.WriteLine($"Slot {i + 1}: {slot.Type} {slot.Name} - Active: {slot.IsActive}");
                 }
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e);
+                else
+                {
+                    Console.WriteLine($"Slot {i + 1}: Empty");
+                }
             }
         }
         private string? GetSensorChoice()
@@ -90,9 +60,9 @@ namespace InvestigationGameApp.Core
         private int? GetSlotChoice()
         {
             // Get slot choice
-            Console.WriteLine($"Choose slot to attach in (from 1 to {room.Agent.AttachedSensors.Length})");
+            Console.WriteLine($"Choose slot to attach in (from 1 to {InvestigationRoom.Agent.AttachedSensors.Length})");
             string? slotChoice = Console.ReadLine();
-            if ((int.TryParse(slotChoice, out int slot)) && slot >= 1 && slot <= room.Agent.AttachedSensors.Length)
+            if ((int.TryParse(slotChoice, out int slot)) && slot >= 1 && slot <= InvestigationRoom.Agent.AttachedSensors.Length)
             {
                 return slot;
             }
@@ -101,19 +71,18 @@ namespace InvestigationGameApp.Core
         private void TryAttack()
         {
             // Attack if the agent is attacker and the turn got to the attacker's attack frequency
-            if (room.Agent is IAttacker attacker && turnCount % attacker.AttackFrequency == 0)
+            if (InvestigationRoom.Agent is IAttacker attacker && turnCount % attacker.AttackFrequency == 0)
             {
                 attacker.Attack();
             }
         }
         public void GameLoop()
         {
-            while (!room.Agent.IsExposed && turnCount < turnLimit)
+            while (!InvestigationRoom.Agent.IsExposed && turnCount < turnLimit)
             {
-                // Show and increase turn count
+                // increase turn count
                 turnCount++;
-                Console.WriteLine($"=== Turn {turnCount} ===");
-                Console.WriteLine($"=== {turnLimit - turnCount} Turns left ===");
+                Displayer.ShowTurn(turnCount, turnLimit);
                 ShowStatus();
                 ISensor? sensor = null;
                 string? sensorChoice = GetSensorChoice();
@@ -134,18 +103,18 @@ namespace InvestigationGameApp.Core
                 int? slot = GetSlotChoice();
                 if (sensor != null && slot != null)
                 {
-                    room.AttachSensor(sensor, (int)slot - 1);
-                    room.DeactivateSensors();
-                    room.ActivateSensors();
-                    Console.WriteLine($"Weaknesses found: {room.GetMatchCount()}/{room.Agent.Weaknesses.Length}");
+                    InvestigationRoom.AttachSensor(sensor, (int)slot - 1);
+                    InvestigationRoom.DeactivateSensors();
+                    InvestigationRoom.ActivateSensors();
+                    Console.WriteLine($"Weaknesses found: {InvestigationRoom.GetMatchCount()}/{InvestigationRoom.Agent.Weaknesses.Length}");
                 }
                 else
                 {
-                    Console.WriteLine($"Invalid slot! Use number from 1 to {room.Agent.AttachedSensors.Length}");
+                    Console.WriteLine($"Invalid slot! Use number from 1 to {InvestigationRoom.Agent.AttachedSensors.Length}");
                 }
                 TryAttack();
             }
-            if (room.Agent.IsExposed)
+            if (InvestigationRoom.Agent.IsExposed)
             {
                 Console.WriteLine("SUCCESS! Agent exposed!");
                 Console.WriteLine($"Mission completed in {turnCount} turns.");

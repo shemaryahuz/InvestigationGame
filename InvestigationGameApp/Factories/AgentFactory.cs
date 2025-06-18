@@ -15,6 +15,8 @@ namespace InvestigationGameApp.Factories
         {
             CreateFootSoldier();
             CreateSquadLeader();
+            CreateSeniorCommander();
+            CreateOrganizationLeader();
         }
         public static AgentFactory GetInstance()
         {
@@ -39,18 +41,23 @@ namespace InvestigationGameApp.Factories
         }
         public void CreateSeniorCommander()
         {
-            int weaknessesLength = 4;
+            int weaknessesLength = 6;
             string[] weaknesses = GetRandomWeaknesses(weaknessesLength, GetSensorTypes());
             Agents["Senior Commander"] = new SeniorCommander(weaknesses);
         }
+        public void CreateOrganizationLeader()
+        {
+            int weaknessesLength = 8;
+            string[] weaknesses = GetRandomWeaknesses(weaknessesLength, GetSensorTypes());
+            Agents["Organization Leader"] = new OrganizationLeader(weaknesses);
+        }
         public IAgent? GetAgent(string agentType)
         {
-            IAgent agent = null!;
             if (Agents.ContainsKey(agentType))
             {
                 return Agents[agentType];
             }
-            return agent;
+            return null;
         }
         private string[] GetSensorTypes()
         {

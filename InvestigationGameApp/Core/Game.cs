@@ -16,20 +16,17 @@ namespace InvestigationGameApp.Core
     {
         public Game(string agentType)
         {
-            try
+            // Create factories
+            sensorFactory = SensorFactory.GetInstance();
+            agentFactory = AgentFactory.GetInstance();
+            // Add agent
+            IAgent? agent = agentFactory.GetAgent(agentType);
+            if (agent == null)
             {
-                // Create factories
-                sensorFactory = SensorFactory.GetInstance();
-                agentFactory = AgentFactory.GetInstance();
-                // Add agent
-                IAgent? agent = agentFactory.GetAgent(agentType);
-                // Create room
-                room = new InvestigationRoom(agent);
+                throw new ArgumentException($"Agent type '{agentType}' does not exist.");
             }
-            catch(Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            // Create room
+            room = new InvestigationRoom(agent);
         }
         private InvestigationRoom room;
         private SensorFactory sensorFactory;

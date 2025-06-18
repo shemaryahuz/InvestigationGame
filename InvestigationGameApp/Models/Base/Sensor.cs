@@ -27,9 +27,5 @@ namespace InvestigationGameApp.Models.Base
         {
             IsActive = false;
         }
-        public virtual string GetData()
-        {
-            return $"Sensor type: {Type}. Sensor Name: {Name}.";
-        }
     }
 }

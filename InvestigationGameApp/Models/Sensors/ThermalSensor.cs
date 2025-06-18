@@ -25,9 +25,5 @@ namespace InvestigationGameApp.Models.Sensors
                 $"weakness {nextWeakness + 1} found! it's {Target.Weaknesses[nextWeakness]}");
             nextWeakness++;
         }
-        public override string GetData()
-        {
-            return $"{base.GetData()} Features: Can check temperature. Revels 1 weakness every use.";
-        }
     }
 }

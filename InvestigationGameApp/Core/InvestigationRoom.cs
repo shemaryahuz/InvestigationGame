@@ -39,6 +39,10 @@ namespace InvestigationGameApp.Core
         {
             sensor.Target = Agent;
             Agent.AttachedSensors[slot] = sensor;
+            if (Agent is IAttacker attacker && !attacker.HasSensors)
+            {
+                attacker.HasSensors = true;
+            }
         }
         public int GetMatchCount()
         {

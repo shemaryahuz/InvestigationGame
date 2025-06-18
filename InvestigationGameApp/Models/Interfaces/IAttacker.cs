@@ -8,7 +8,8 @@ namespace InvestigationGameApp.Models.Interfaces
 {
     internal interface IAttacker
     {
-        int AttackCounter { get; set; }
+        bool HasSensors { get; set; }
+        int AttackFrequency { get; set; }
         void Attack();
     }
 }

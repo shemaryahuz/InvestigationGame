@@ -15,6 +15,5 @@ namespace InvestigationGameApp.Models.Interfaces
         bool IsActive { get; set; }
         void Activate();
         void Deactivate();
-        string GetData();
     }
 }

@@ -25,9 +25,5 @@ namespace InvestigationGameApp.Models.Sensors
                 Console.WriteLine($"The sensor {Name} is broken. You need to replace it");
             }
         }
-        public override string GetData()
-        {
-            return $"{base.GetData()} Features: Can measure heart rate. Broke after 3 uses.";
-        }
     }
 }

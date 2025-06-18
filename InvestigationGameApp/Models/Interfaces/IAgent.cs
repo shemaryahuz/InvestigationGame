@@ -9,7 +9,7 @@ namespace InvestigationGameApp.Models.Interfaces
     // interface for contract of all agents
     internal interface IAgent
     {
-        string Name { get; }
+        string Type { get; }
         string[] Weaknesses { get; set; }
         ISensor[] AttachedSensors { get; }
         bool IsExposed { get; set; }

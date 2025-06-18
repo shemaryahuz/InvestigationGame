@@ -10,7 +10,7 @@ namespace InvestigationGameApp.Models.Base
     // base abstract class for implement base-agent properties and methods for all agents
     internal abstract class Agent: IAgent
     {
-        public Agent(string name, string[] weaknesses, int weaknessesLength)
+        public Agent(string type, string[] weaknesses, int weaknessesLength)
         {
             // Validate weaknesses length
             if (weaknesses.Length != weaknessesLength)
@@ -20,11 +20,11 @@ namespace InvestigationGameApp.Models.Base
                     );
             }
             // Initialize properties  
-            Name = name;
+            Type = type;
             Weaknesses = weaknesses;
             AttachedSensors = new ISensor[weaknessesLength];
         }
-        public string Name { get; }
+        public string Type { get; }
         public string[] Weaknesses { get; set; }
         public ISensor[] AttachedSensors { get; set; }
         public bool IsExposed { get; set; } = false;

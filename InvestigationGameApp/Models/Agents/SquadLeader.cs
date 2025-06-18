@@ -12,8 +12,8 @@ namespace InvestigationGameApp.Models.Agents
     internal class SquadLeader : Agent, IAgent, IAttacker
     {
         private const int weaknessesLength = 4;
-        public SquadLeader(string name, string[] weaknesses)
-            : base(name, weaknesses, weaknessesLength) { }
+        public SquadLeader(string[] weaknesses)
+            : base("Squad leader", weaknesses, weaknessesLength) { }
         public bool HasSensors { get; set; } = false;
         public int AttackFrequency { get; set; } = 3;
         public void Attack()
@@ -28,7 +28,7 @@ namespace InvestigationGameApp.Models.Agents
                     if (AttachedSensors[randomIndex] != null)
                     {
                         Console.WriteLine(
-                            $"Squad leader {Name} removed Sensor {AttachedSensors[randomIndex].Type} {AttachedSensors[randomIndex].Name}!\n" +
+                            $"Squad leader {Type} removed Sensor {AttachedSensors[randomIndex].Type} {AttachedSensors[randomIndex].Name}!\n" +
                             $"Slot {randomIndex + 1} is empty."
                             );
                         AttachedSensors[randomIndex] = null!;

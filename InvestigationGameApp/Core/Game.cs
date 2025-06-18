@@ -16,20 +16,17 @@ namespace InvestigationGameApp.Core
     {
         public Game(string agentType)
         {
-            try
+            // Create factories
+            sensorFactory = SensorFactory.GetInstance();
+            agentFactory = AgentFactory.GetInstance();
+            // Add agent
+            IAgent? agent = agentFactory.GetAgent(agentType);
+            if (agent == null)
             {
-                // Create factories
-                sensorFactory = SensorFactory.GetInstance();
-                agentFactory = AgentFactory.GetInstance();
-                // Add agent
-                IAgent? agent = agentFactory.GetAgent(agentType);
-                // Create room
-                room = new InvestigationRoom(agent);
+                throw new ArgumentException($"Agent type '{agentType}' does not exist.");
             }
-            catch(Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            // Create room
+            room = new InvestigationRoom(agent);
         }
         private InvestigationRoom room;
         private SensorFactory sensorFactory;
@@ -43,7 +40,7 @@ namespace InvestigationGameApp.Core
                 // Show rules
                 Console.WriteLine(
                     "=== Investigation Game Started ===\n" +
-                    $"Agent {room.Agent.Name} is in the investigation room.\n" +
+                    $"Agent {room.Agent.Type} is in the investigation room.\n" +
                     "Your mission: Find all weaknesses to expose the agent!"
                     );
                 // Show available sensors with features
@@ -62,7 +59,7 @@ namespace InvestigationGameApp.Core
             {
                 // Show match count
                 Console.WriteLine(
-                    $"Agent {room.Agent.Name}.\n" +
+                    $"Agent {room.Agent.Type}.\n" +
                     $"Weaknesses found: {room.GetMatchCount()}/{room.Agent.Weaknesses.Length}"
                     );
                 // Show current attached sensors

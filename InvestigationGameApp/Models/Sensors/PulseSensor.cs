@@ -17,7 +17,7 @@ namespace InvestigationGameApp.Models.Sensors
             if (capacity > 0)
             {
                 base.Activate();
-                Console.WriteLine($"The sensor {Name} measures {Target.Name}'s heart rate...");
+                Console.WriteLine($"The sensor {Name} measures {Target.Type}'s heart rate...");
                 capacity--;
             }
             else

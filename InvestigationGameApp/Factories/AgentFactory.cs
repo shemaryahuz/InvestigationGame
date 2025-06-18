@@ -13,8 +13,10 @@ namespace InvestigationGameApp.Factories
         private static AgentFactory _instance;
         private AgentFactory()
         {
-            CreateFootSoldiers();
-            CreateSquadLeaders();
+            CreateFootSoldier();
+            CreateSquadLeader();
+            CreateSeniorCommander();
+            CreateOrganizationLeader();
         }
         public static AgentFactory GetInstance()
         {
@@ -24,45 +26,38 @@ namespace InvestigationGameApp.Factories
             }
             return _instance;
         }
-        public Dictionary<string, List<IAgent>> Agents { get; set; } = new Dictionary<string, List<IAgent>>
-        {
-            ["footSoldier"] = new List<IAgent>(),
-            ["squadLeader"] = new List<IAgent>()
-        };
-        public void CreateFootSoldiers()
+        public Dictionary<string, IAgent> Agents { get; set; } = new Dictionary<string, IAgent > ();
+        public void CreateFootSoldier()
         {
             int weaknessesLength = 2;
-            for (int i = 0; i < 5; i++)
-            {
-                string[] types = GetSensorTypes();
-                string[] weaknesses = GetRandomWeaknesses(weaknessesLength, types);
-                FootSoldier footSoldier = new FootSoldier($"footSoldier{DateTime.Now.Millisecond}", weaknesses);
-                Agents["footSoldier"].Add(footSoldier);
-            }
+            string[] weaknesses = GetRandomWeaknesses(weaknessesLength, GetSensorTypes());
+            Agents["Foot Soldier"] = new FootSoldier(weaknesses);
         }
-        public void CreateSquadLeaders()
+        public void CreateSquadLeader()
         {
             int weaknessesLength = 4;
-            for (int i = 0; i < 5; i++)
-            {
-                string[] types = GetSensorTypes();
-                string[] weaknesses = GetRandomWeaknesses(weaknessesLength, types);
-                SquadLeader squadLeader = new SquadLeader($"squadLeader{DateTime.Now.Millisecond}", weaknesses);
-                Agents["squadLeader"].Add(squadLeader);
-            }
+            string[] weaknesses = GetRandomWeaknesses(weaknessesLength, GetSensorTypes());
+            Agents["Squad Leader"] = new SquadLeader(weaknesses);
+        }
+        public void CreateSeniorCommander()
+        {
+            int weaknessesLength = 6;
+            string[] weaknesses = GetRandomWeaknesses(weaknessesLength, GetSensorTypes());
+            Agents["Senior Commander"] = new SeniorCommander(weaknesses);
+        }
+        public void CreateOrganizationLeader()
+        {
+            int weaknessesLength = 8;
+            string[] weaknesses = GetRandomWeaknesses(weaknessesLength, GetSensorTypes());
+            Agents["Organization Leader"] = new OrganizationLeader(weaknesses);
         }
         public IAgent? GetAgent(string agentType)
         {
-            IAgent agent = null;
-            foreach (IAgent a in Agents[agentType])
+            if (Agents.ContainsKey(agentType))
             {
-                if (!a.IsExposed)
-                {
-                    agent = a;
-                    break;
-                }
+                return Agents[agentType];
             }
-            return agent;
+            return null;
         }
         private string[] GetSensorTypes()
         {

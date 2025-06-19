@@ -1,4 +1,4 @@
-﻿using InvestigationGameApp.GameData;
+﻿using InvestigationGameApp.Controllers;
 
 namespace InvestigationGameApp
 {

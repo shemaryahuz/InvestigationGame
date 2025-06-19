@@ -1,5 +1,4 @@
-﻿using InvestigationGameApp.GameData;
-using InvestigationGameApp.UI;
+﻿using InvestigationGameApp.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +9,10 @@ namespace InvestigationGameApp.Core
 {
     internal static class GameRunner
     {
-        public static void Run(GameLevel level)
+        public static bool Run(GameLevel level)
         {
             Displayer.ShowRules(level.InvestigationRoom);
-            level.GameLoop();
+            return level.GameLoop();
         }
     }
 }

@@ -37,13 +37,8 @@ namespace InvestigationGameApp.Factories
         }
         private static string[] GetSensorTypes()
         {
-            List<string> types = new List<string>();
-            SensorFactory sensorFactory = SensorFactory.GetInstance();
-            foreach (string sensorType in sensorFactory.Sensors.Keys)
-            {
-                types.Add(sensorType);
-            }
-            return types.ToArray();
+            string[] types = new string[] {"audio", "thermal", "pulse"};
+            return types;
         }
         private static string[] GetRandomWeaknesses(int length, string[] types)
         {

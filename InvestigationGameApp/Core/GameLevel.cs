@@ -15,59 +15,16 @@ namespace InvestigationGameApp.Core
 {
     internal class GameLevel
     {
-        public GameLevel(IAgent agent)
+        public GameLevel(IAgent agent, int turns)
         {
             // Create room
             InvestigationRoom = new InvestigationRoom(agent);
+            turnLimit = turns;
         }
         public InvestigationRoom InvestigationRoom;
-        private SensorFactory sensorFactory = SensorFactory.GetInstance();
+        private SensorFactory sensorFactory = new SensorFactory();
         private int turnCount = 0;
-        private int turnLimit = 10;
-        private void ShowStatus()
-        {
-            // Show match count
-            Console.WriteLine(
-                $"Agent {InvestigationRoom.Agent.Type}.\n" +
-                $"Weaknesses found: {InvestigationRoom.GetMatchCount()}/{InvestigationRoom.Agent.Weaknesses.Length}"
-                );
-            // Show current attached sensors
-            Console.WriteLine("Current sensors:");
-            for (int i = 0; i < InvestigationRoom.Agent.AttachedSensors.Length; i++)
-            {
-                if (InvestigationRoom.Agent.AttachedSensors[i] != null)
-                {
-                    ISensor slot = InvestigationRoom.Agent.AttachedSensors[i];
-                    Console.WriteLine($"Slot {i + 1}: {slot.Type} {slot.Name} - Active: {slot.IsActive}");
-                }
-                else
-                {
-                    Console.WriteLine($"Slot {i + 1}: Empty");
-                }
-            }
-        }
-        private string? GetSensorChoice()
-        {
-            // Get sensor choice
-            Console.WriteLine("Choose sensor type from the fallowing:");
-            foreach(string type in sensorFactory.Sensors.Keys)
-            {
-                Console.WriteLine($"'{type}'");
-            }
-            string? sensorChoice = Console.ReadLine()?.ToLower();
-            return sensorChoice;
-        }
-        private int? GetSlotChoice()
-        {
-            // Get slot choice
-            Console.WriteLine($"Choose slot to attach in (from 1 to {InvestigationRoom.Agent.AttachedSensors.Length})");
-            string? slotChoice = Console.ReadLine();
-            if ((int.TryParse(slotChoice, out int slot)) && slot >= 1 && slot <= InvestigationRoom.Agent.AttachedSensors.Length)
-            {
-                return slot;
-            }
-            return null;
-        }
+        private int turnLimit;
         private void TryAttack()
         {
             // Attack if the agent is attacker and the turn got to the attacker's attack frequency
@@ -76,53 +33,49 @@ namespace InvestigationGameApp.Core
                 attacker.Attack();
             }
         }
-        public void GameLoop()
+        public bool GameLoop()
         {
             while (!InvestigationRoom.Agent.IsExposed && turnCount < turnLimit)
             {
                 // increase turn count
                 turnCount++;
                 Displayer.ShowTurn(turnCount, turnLimit);
-                ShowStatus();
+                Displayer.ShowStatus(InvestigationRoom);
                 ISensor? sensor = null;
-                string? sensorChoice = GetSensorChoice();
-                if (sensorChoice != null && sensorFactory.Sensors.ContainsKey(sensorChoice))
+                string? sensorChoice = InputHandler.GetSensorChoice(sensorFactory);
+                if (InputHandler.ValidateSensorChoice(sensorChoice, sensorFactory))
                 {
                     // Get sensor
                     sensor = sensorFactory.GetSensor(sensorChoice);
                 }
                 else
                 {
-                    Console.WriteLine("Invalid sensor type! Use one of the fallowing:");
-                    foreach (string type in sensorFactory.Sensors.Keys)
-                    {
-                        Console.WriteLine($"'{type}'");
-                    }
+                    InputHandler.InvalidSensorMessage(sensorFactory);
                     continue;
                 }
-                int? slot = GetSlotChoice();
+                int? slot = InputHandler.GetSlotChoice(InvestigationRoom);
                 if (sensor != null && slot != null)
                 {
                     InvestigationRoom.AttachSensor(sensor, (int)slot - 1);
                     InvestigationRoom.DeactivateSensors();
                     InvestigationRoom.ActivateSensors();
-                    Console.WriteLine($"Weaknesses found: {InvestigationRoom.GetMatchCount()}/{InvestigationRoom.Agent.Weaknesses.Length}");
+                    Displayer.ShowFoundWeaknesses(InvestigationRoom);
                 }
                 else
                 {
-                    Console.WriteLine($"Invalid slot! Use number from 1 to {InvestigationRoom.Agent.AttachedSensors.Length}");
+                    InputHandler.InvalidSlotMessage(InvestigationRoom);
                 }
                 TryAttack();
             }
             if (InvestigationRoom.Agent.IsExposed)
             {
-                Console.WriteLine("SUCCESS! Agent exposed!");
-                Console.WriteLine($"Mission completed in {turnCount} turns.");
+                Displayer.ShowWin(turnCount);
             }
             else
             {
-                Console.WriteLine("Game Over - Turn limit reached!");
+                Displayer.ShowLose();
             }
+            return InvestigationRoom.Agent.IsExposed;
         }
     }
 }

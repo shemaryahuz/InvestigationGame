@@ -82,5 +82,13 @@ namespace InvestigationGameApp.UI
         {
             Console.WriteLine("Game Over - Turn limit reached!\n\n");
         }
+        public static void ShowEndGame()
+        {
+            Console.WriteLine(
+                "CONGRATULATIONS!!!\n" +
+                " You have revealed all the agents!!\n" +
+                " Thank you for using the investigation game, we look forward to seeing you again!"
+                );
+        }
     }
 }

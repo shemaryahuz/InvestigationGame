@@ -24,6 +24,7 @@ namespace InvestigationGameApp.Controllers
             RunLevel2();
             RunLevel3();
             RunLevel4();
+            Displayer.ShowEndGame();
         }
         private void RunLevel(GameLevel level)
         {

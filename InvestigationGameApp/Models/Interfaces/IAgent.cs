@@ -13,5 +13,6 @@ namespace InvestigationGameApp.Models.Interfaces
         string[] Weaknesses { get; set; }
         ISensor[] AttachedSensors { get; }
         bool IsExposed { get; set; }
+        string GetData();
     }
 }

@@ -10,18 +10,12 @@ namespace InvestigationGameApp.Factories
 {
     internal class SensorFactory
     {
-        private static SensorFactory _instance;
-        private SensorFactory()
+        public SensorFactory(int quantity)
         {
-            CreateSensors();
-        }
-        public static SensorFactory GetInstance()
-        {
-            if (_instance is null)
-            {
-                _instance = new SensorFactory();
-            }
-            return _instance;
+            _quantity = quantity;
+            CreateAudioSensors();
+            CreateThermalSensors();
+            CreatePulseSensors();
         }
         // Dictionary to save the sensors, string of the type as key and list of sensors as value
         public Dictionary<string, List<ISensor>> Sensors { get; set; } = new Dictionary<string, List<ISensor>>
@@ -30,35 +24,47 @@ namespace InvestigationGameApp.Factories
             ["thermal"] = new List<ISensor>(),
             ["pulse"] = new List<ISensor>()
         };
-        public void CreateSensors()
+        private int _quantity;
+        public void CreateAudioSensors()
         {
-            // Add 5 audio sensors
-            for (int i = 0; i < 5; i++)
+            // Add audio sensors
+            for (int i = 0; i < _quantity; i++)
             {
-                AudioSensor audioSensor = new AudioSensor($"A{DateTime.Now.Millisecond}{i}");
+                AudioSensor audioSensor = new AudioSensor($"microphone{i}");
                 Sensors["audio"].Add(audioSensor);
             }
-            // Add 5 thermal sensors
-            for (int i = 0; i < 5; i++)
+        }
+        public void CreateThermalSensors()
+        {
+            // Add thermal sensors
+            for (int i = 0; i < _quantity; i++)
             {
-                ThermalSensor thermalSensor = new ThermalSensor($"T{DateTime.Now.Millisecond}{i}");
+                ThermalSensor thermalSensor = new ThermalSensor($"detector{i}");
                 Sensors["thermal"].Add(thermalSensor);
             }
-            // Add 5 pulse sensors
-            for (int i = 0; i < 5; i++)
+        }
+        public void CreatePulseSensors()
+        {
+            // Add pulse sensors
+            for (int i = 0; i < _quantity; i++)
             {
-                PulseSensor pulseSensor = new PulseSensor($"P{DateTime.Now.Millisecond}{i}");
+                PulseSensor pulseSensor = new PulseSensor($"amped{i}");
                 Sensors["pulse"].Add(pulseSensor);
             }
         }
         public ISensor? GetSensor(string sensorType)
         {
-            ISensor sensor = null;
+            ISensor sensor = null!;
             if (Sensors.ContainsKey(sensorType) && Sensors[sensorType].Count > 0)
             {
                 Random random = new Random();
                 int index = random.Next(Sensors[sensorType].Count);
                 sensor = Sensors[sensorType][index];
+                while (sensor.IsActive)
+                {
+                    index = random.Next(Sensors[sensorType].Count);
+                    sensor = Sensors[sensorType][index];
+                }
             }
             return sensor;
         }

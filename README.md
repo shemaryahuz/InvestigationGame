@@ -2,110 +2,146 @@
 
 A game that simulates interrogating agents using sensors.
 
+**Author:** [Shemaryahu Zalmanov](https://github.com/shemaryahuz)
+
 ---
 
-## Features & Structure
-
-### Project Structure
+## 📁 Project Structure
 
 ```
 InvestigationGameApp/
+├── Controllers/
+│   └── GameManager.cs        # Manages all game levels and flow
 ├── Core/
-│   ├── Game.cs                    # Controls game logic, rules, main loop, and helpers
-│   └── InvestigationRoom.cs       # Holds agent, manages sensors, checks against weaknesses
+│   ├── GameLevel.cs          # Encapsulates a single level's logic and state
+│   └── InvestigationRoom.cs  # Handles an agent under investigation
 ├── Factories/
-│   ├── SensorFactory.cs           # Creates and stores 5 sensors from all types
-│   └── AgentFactory.cs            # Creates and stores one agent from all types
+│   ├── AgentFactory.cs       # Static, provides creation of agents for each level
+│   └── SensorFactory.cs      # Creates and manages sensors by type
 ├── Models/
 │   ├── Interfaces/
-│   │   ├── ISensor.cs             # Sensor interface
-│   │   ├── IAgent.cs              # Agent interface
-│   │   └── IAttacker.cs           # For agents that can attack
-│   ├── Base/
-│   │   ├── Sensor.cs              # Abstract base class for sensors
-│   │   └── Agent.cs               # Abstract base class for agents
-│   ├── Sensors/
-│   │   ├── AudioSensor.cs
-│   │   ├── ThermalSensor.cs
-│   │   └── PulseSensor.cs
-│   └── Agents/
-│       ├── FootSoldier.cs
-│       └── SquadLeader.cs
-├── Program.cs                     # Entry point
+│   │   ├── IAgent.cs         # Agent contract, with GetData() for rules
+│   │   └── IAttacker.cs      # For agents that can attack sensors
+│   └── ...                   # Agents and sensors implementations
+├── UI/
+│   ├── Displayer.cs          # All game output and messages
+│   └── InputHandler.cs       # All user input and validation
+└── Program.cs                # Entry point, initializes and starts the game
 ```
 
 ---
 
-## Main Components & Flow (Branch: `fix-factories`)
+## 🧩 Main Classes & Their Roles
 
-### SensorFactory.cs
-- Creates and stores 5 sensors from all types.
+- **Program.cs**  
+  Initializes `GameManager` and starts the game by calling `RunAllLevels()`.
 
-### AgentFactory.cs
-- Creates and stores one agent from all types.
+- **GameManager.cs**  
+  - Controls the flow through all 4 levels.
+  - Methods for running each level: Initialize agent (via `AgentFactory`), set turn limit, display level intro, run the level with a loop until win, then show end message.
 
-### InvestigationRoom.cs
-- Contains the current agent.
-- Methods to attach sensors, check for matches, and expose the agent.
-- Supports deactivating and activating sensors (e.g., for breaking sensors).
+- **GameLevel.cs**  
+  - Properties: Holds the `InvestigationRoom`, its own `SensorFactory`, tracks current turn and turn limit.
+  - `GameLoop()` runs turns: displays status, handles user choices, attaches sensors, calls attack logic, checks win/lose.
+  - `TryAttack()` allows special agents (those implementing `IAttacker`) to attack at their frequency.
 
-### Game.cs
-- **Fields:** `room`, `agentFactory`, `sensorFactory`, `turnCount` (starts at 0), `turnLimit` (10 by default).
-- **Constructor:**
-  - Receives an agent type string.
-  - Creates factories and the agent (using `getAgent` by type from `agentFactory`).
-  - Creates the room with the agent.
-- **startGame():** Displays details and rules.
-- **showStatus():** Shows current status of the investigation via the room.
-- **GetSensorChoice()/GetSlotChoice():** Get user choices for sensors and slots.
-- **TryAttack():** If the agent is an attacker (implements `IAttacker`), and turn count is at the appropriate interval, performs an attack action.
-- **gameLoop():**
-  - While the agent is not exposed and turn limit is not reached:
-    - Show status.
-    - Get user choices.
-    - Attach sensor.
-    - Deactivate sensors if needed (e.g., for breaking sensors).
-    - Activate sensors.
-    - Show the result.
-  - At loop end, shows win or lose message.
-- **Run():**
-  - Calls `startGame()` and `gameLoop()`.
+- **Displayer.cs**  
+  - Handles all messaging, including start/end screens, turn summaries, agent/sensor rules, and feedback.
 
-### Program.cs
-- Creates a `Game` object and runs it 4 times for 4 levels, each with the next agent type.
+- **InputHandler.cs**  
+  - Collects and validates all user inputs for sensors and slots.
+
+- **AgentFactory.cs / SensorFactory.cs**  
+  - Factories for creating agents (one per level, with increasing complexity) and pools of sensors.
 
 ---
 
-## Gameplay Overview
+## 🎮 Game Flow Overview
 
-1. **Start the Game:**  
-   - Rules and details are displayed.
-   - Agent and sensor factories are set up.
-   - The chosen agent is placed in the investigation room.
+```plaintext
+┌────────────┐
+│ Program.cs │
+└─────┬──────┘
+      │
+      ▼
+┌───────────────────────┐
+│   GameManager.cs      │
+│  RunAllLevels()       │
+└───┬───────────────────┘
+    │
+    ├──▶ Level 1: FootSoldier (2 weaknesses, 10 turns)
+    ├──▶ Level 2: SquadLeader (4 weaknesses, 20 turns)
+    ├──▶ Level 3: SeniorCommander (6 weaknesses, 30 turns)
+    └──▶ Level 4: OrganizationLeader (8 weaknesses, 40 turns)
+          (Each: create agent, set turns, run GameLevel)
+                 │
+                 ▼
+       ┌─────────────────┐
+       │  GameLevel.cs   │
+       │ GameLoop()      │
+       └─────┬───────────┘
+             │
+             ▼
+       ┌─────────────────────────────┐
+       │ InvestigationRoom,         │
+       │ SensorFactory, Displayer,  │
+       │ InputHandler               │
+       └────────────────────────────┘
+```
 
-2. **Game Loop (up to 10 turns):**
-   - The current status is shown.
-   - User chooses a sensor and slot.
-   - Sensor is attached to the agent.
-   - Sensors can be deactivated/reactivated (for breaking and attack features).
-   - If the agent is an attacker and it's time, an attack may occur (e.g., removing a sensor).
-   - Results are displayed.
-
-3. **End Game:**  
-   - If the agent is exposed (all weaknesses found), you win.
-   - If the turn limit is reached without exposing the agent, you lose.
+### Game Loop (per level)
+1. **Start:** Show rules and agent data.
+2. **Each Turn:**
+   - Display status and sensors.
+   - User selects sensor and slot.
+   - Attach and activate sensor.
+   - Agent may attack (if applicable).
+   - Show found weaknesses.
+3. **End:**
+   - Win: All weaknesses exposed.
+   - Lose: Turn limit reached.
 
 ---
 
-## Rules & Features
+## 🤖 Agent & Sensor Rules
 
-- **Agents** have specific weaknesses.
-- **Sensors** are used to expose agent weaknesses.
-- **ThermalSensor**: Reveals one weakness per use.
-- **PulseSensor**: Breaks after 3 uses.
-- **SquadLeader** (attacker): Every 3 turns, can remove one attached sensor.
-- **Win Condition:** Expose all agent weaknesses before reaching turn limit.
+- **Agent rules** (see `IAgent.GetData()`):
+  - Each agent has a type and a unique set of weaknesses.
+  - Higher levels have agents with more weaknesses and may have attack abilities.
+  - Example: OrganizationLeader has 8 weaknesses and attacks sensors every few turns.
+
+- **Sensor rules** (see `Displayer.ShowLevelStart()`):
+  - **Audio Sensor:** Records agent's audio.
+  - **Thermal Sensor:** Reveals one weakness per turn.
+  - **Pulse Sensor:** Breaks after three uses.
 
 ---
 
-**This README describes the new project flow as implemented on the `fix-factories` branch. For more details, see the code and commit history.**
+## 🌟 SOLID Principles in Practice
+
+- **Single Responsibility:**  
+  Each class has a clear, focused role (e.g., input, display, game logic, agent creation).
+
+- **Open/Closed:**  
+  New agents or sensors can be added by extending factories and interfaces without changing core logic.
+
+- **Liskov Substitution:**  
+  All agents and sensors implement interfaces, so game logic works with any conforming type.
+
+- **Interface Segregation:**  
+  Separate interfaces for agents, attackers, and sensors (IAgent, IAttacker, ISensor).
+
+- **Dependency Inversion:**  
+  High-level modules (`GameManager`, `GameLevel`) interact with abstractions (interfaces, factories), not concrete implementations.
+
+---
+
+## 📝 Summary
+
+- **Levels:** 4, each with a unique agent and increasing difficulty
+- **Goal:** Expose all agent weaknesses before the turn limit
+- **Gameplay:** Investigate, attach sensors, react to agent attacks, and manage resources to win.
+
+---
+
+**Enjoy your journey into investigation logic and SOLID design!**

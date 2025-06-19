@@ -28,5 +28,9 @@ namespace InvestigationGameApp.Models.Base
         public string[] Weaknesses { get; set; }
         public ISensor[] AttachedSensors { get; set; }
         public bool IsExposed { get; set; } = false;
+        public virtual string GetData()
+        {
+            return $"Type: {Type} agent. Weaknesses Count: {Weaknesses.Length}.";
+        }
     }
 }

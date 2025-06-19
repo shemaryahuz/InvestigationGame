@@ -32,5 +32,9 @@ namespace InvestigationGameApp.Models.Agents
                 }
             }
         }
+        public override string GetData()
+        {
+            return $"{base.GetData()} Feature: removes one sensor every 3 turns.";
+        }
     }
 }

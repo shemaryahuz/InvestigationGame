@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace InvestigationGameApp.Controllers
 {
-    internal class LevelManager
+    internal class GameManager
     {
         private GameLevel level;
         private int levelNumber;

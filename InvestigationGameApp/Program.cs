@@ -6,7 +6,7 @@ namespace InvestigationGameApp
     {
         static void Main(string[] args)
         {
-            LevelManager manager = new LevelManager();
+            GameManager manager = new GameManager();
             manager.RunAllLevels();
         }
     }

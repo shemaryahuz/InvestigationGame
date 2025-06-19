@@ -10,8 +10,9 @@ namespace InvestigationGameApp.Factories
 {
     internal class SensorFactory
     {
-        public SensorFactory()
+        public SensorFactory(int quantity)
         {
+            _quantity = quantity;
             CreateAudioSensors();
             CreateThermalSensors();
             CreatePulseSensors();
@@ -23,10 +24,11 @@ namespace InvestigationGameApp.Factories
             ["thermal"] = new List<ISensor>(),
             ["pulse"] = new List<ISensor>()
         };
+        private int _quantity;
         public void CreateAudioSensors()
         {
-            // Add 10 audio sensors
-            for (int i = 0; i < 10; i++)
+            // Add audio sensors
+            for (int i = 0; i < _quantity; i++)
             {
                 AudioSensor audioSensor = new AudioSensor($"microphone{i}");
                 Sensors["audio"].Add(audioSensor);
@@ -34,8 +36,8 @@ namespace InvestigationGameApp.Factories
         }
         public void CreateThermalSensors()
         {
-            // Add 10 thermal sensors
-            for (int i = 0; i < 10; i++)
+            // Add thermal sensors
+            for (int i = 0; i < _quantity; i++)
             {
                 ThermalSensor thermalSensor = new ThermalSensor($"detector{i}");
                 Sensors["thermal"].Add(thermalSensor);
@@ -43,8 +45,8 @@ namespace InvestigationGameApp.Factories
         }
         public void CreatePulseSensors()
         {
-            // Add 10 pulse sensors
-            for (int i = 0; i < 10; i++)
+            // Add pulse sensors
+            for (int i = 0; i < _quantity; i++)
             {
                 PulseSensor pulseSensor = new PulseSensor($"amped{i}");
                 Sensors["pulse"].Add(pulseSensor);

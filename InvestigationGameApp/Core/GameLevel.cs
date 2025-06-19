@@ -15,14 +15,16 @@ namespace InvestigationGameApp.Core
 {
     internal class GameLevel
     {
-        public GameLevel(IAgent agent, int turns)
+        public GameLevel(IAgent agent, int sensorsQuantity, int turns)
         {
+            // Create sensors
+            sensorFactory = new SensorFactory(sensorsQuantity);
             // Create room
             InvestigationRoom = new InvestigationRoom(agent);
             turnLimit = turns;
         }
         public InvestigationRoom InvestigationRoom;
-        private SensorFactory sensorFactory = new SensorFactory();
+        private SensorFactory sensorFactory;
         private int turnCount = 0;
         private int turnLimit;
         private void TryAttack()
